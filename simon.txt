@@ -1,0 +1,14 @@
+Każda gra ma swoje id, trzyma je sobie front oraz w back-endzie mamy słowniki na przykład z grami które maja id
+
+game_states = {
+	id_1 : game_state,
+	id_2 : game_state,
+}
+
+game_state = {
+	actual_player = 0;
+	player_1_cards = {};
+	player_2_cards = {};
+	number_cards = {};
+	operation_cards = {};
+}
