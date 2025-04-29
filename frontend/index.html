@@ -50,6 +50,17 @@
             messagesList.appendChild(message);
         })
 
+        socket.on("load messages", (messages) => {
+            
+            for (let i = 0; i < messages.length; i++){
+                messageText = messages[i][0];
+                id = messages[i][1];
+                message = document.createElement('li');
+                message.textContent = id + ' ' + messageText;
+                messagesList.appendChild(message);
+            }
+        })
+
     </script>
     
 </body>

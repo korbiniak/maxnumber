@@ -8,6 +8,13 @@ const { Server } = require('socket.io');
 const io = new Server(server);
 
 
+messages = []
+
+nicknames = {}
+
+actualNick = 0;
+
+
 app.get('/', (req, res) =>{
     res.sendFile('index.html', { root: path.join(__dirname, '../frontend') });
     //res.sendFile(__dirname + "/index.html");
@@ -15,10 +22,14 @@ app.get('/', (req, res) =>{
 
 
 io.on('connection', (socket)=>{
-    console.log("oh");
+    nicknames[socket.id] = actualNick;
+    actualNick ++;
+
+    socket.emit("load messages", messages);
 
     socket.on("message", (msg) => {
-        io.emit('new message', socket.id, msg);
+        messages.push([msg, nicknames[socket.id]]);
+        io.emit('new message', nicknames[socket.id], msg);
     })
 })
 
