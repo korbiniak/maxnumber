@@ -8,10 +8,12 @@ export type Card = Digit | Operation;
 export type Expression = Card[];
 
 export type Room = {
-  id: string;
-  players: string[];
-  gameId?: number;
-};
+  name : string;
+  gameId? : number;
+  player1 : string;
+  player2? : string;
+  playersNum : number;
+}
 
 export interface GameState {
   player1exp: Expression;
@@ -20,4 +22,5 @@ export interface GameState {
   player2Id: PlayerId;
   currentTurn: 1 | 2;
   availableCards: Card[];
+  id : number;
 }

@@ -3,11 +3,24 @@ import "../styles/main.css";
 import Header from "../components/Header/Header";
 import GameView from "../pages/GameView/GameView";
 import Footer from "../components/Footer/Footer";
-import {BrowserRouter, Routes, Route} from "react-router-dom";
+import {Routes, Route, useNavigate} from "react-router-dom";
 import Rooms from "../pages/Rooms/Rooms";
 import About from "../pages/About/About";
+import { useEffect } from "react";
+import socket from "../socket";
 
 function App() {
+
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+    socket.on("room-joined", (name : string) => {
+      navigate("/");
+      console.log(" zaczynamy gre w pokoju ", name);
+    });
+  }, [])
+
+
   return (
     <div className = {styles.app}>
 
