@@ -1,0 +1,43 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Góra – przeciwnik */
+.enemies {
+  height: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Środek – dostępne karty po lewej */
+.middle {
+  height: 60%;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+
+/* Dostępne karty – po lewej */
+.available {
+  width: 30%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Wolna przestrzeń po prawej, jeśli chcesz dodać coś więcej */
+.middleSpacer {
+  flex: 1;
+}
+
+/* Dół – twoje karty */
+.mine {
+  height: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -1,0 +1,28 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* pełna wysokość okna */
+}
+
+.app_header {
+  padding: 16px 24px;
+  background-color: #f5f5f5;
+  border-bottom: 2px solid #ccc;
+}
+
+.app_MainView {
+  flex: 1; /* wypełnia całą dostępną przestrzeń */
+  padding: 24px;
+  background-color: #fff;
+}
+
+.app_footer {
+  padding: 16px 24px;
+  background-color: #f5f5f5;
+  border-top: 2px solid #ccc;
+}
