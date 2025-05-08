@@ -1,38 +1,38 @@
-.container{
-    display: flex;
-    align-items: center;    
-    justify-content: center;
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-
-.left{
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
+.left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
 }
 
-.middle{
-    flex: 6;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 30px;
+.middle {
+  flex: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
 }
 
-.roomButton{
-    min-width: 500px;
-    min-height: 50px;
-
-}
-  
-button{   
-     background-color:lightgray !important;
+.roomButton {
+  min-width: 500px;
+  min-height: 50px;
 }
 
-button:hover{   
-    background-color: rgb(177, 177, 177) !important;
+button {
+  background-color: rgb(204, 197, 197) !important;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+button:hover {
+  background-color: rgb(177, 177, 177) !important;
 }
