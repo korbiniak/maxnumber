@@ -1,0 +1,11 @@
+{
+  "name": "max-number-server",
+  "version": "0.0.1",
+  "description": "Max number server",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "scripts": {
+    "dev": "node src/index.js" 
+  }
+}
