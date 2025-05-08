@@ -1,1 +1,12 @@
-{}
+{
+  "name": "max-number-shared",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.2"
+  }
+}
