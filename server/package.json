@@ -1,11 +1,20 @@
 {
-  "name": "max-number-server",
+  "name": "server",
   "version": "0.0.1",
   "description": "Max number server",
   "dependencies": {
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "shared": "*",
+    "socket.io": "^4.8.1"
   },
   "scripts": {
-    "dev": "node src/index.js" 
+    "dev": "nodemon --exec ts-node src/index.ts"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.15.17",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }
