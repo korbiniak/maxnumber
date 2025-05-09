@@ -1,15 +1,7 @@
 import express, { Request, Response } from "express";
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-import { GameState } from "shared";
+import { GameState, SERVER_PORT, PlayerId, Card} from "shared";
 import http from "http";
 import {Server} from "socket.io";
-=======
-import { GameState, SERVER_PORT } from "../../shared";
->>>>>>> Stashed changes
-=======
-import { GameState, SERVER_PORT } from "../../shared";
->>>>>>> Stashed changes
 
 
 const app = express();
@@ -21,11 +13,12 @@ const io = new Server(server);
 const port = SERVER_PORT;
 
 
+
 let current_games = {}; //A dict with current games {id : game}
 let last_game_id = 0; //Last game id (to get a new one)
 
-let players_queue = []; //A queue of current waiting players (id)
-//players_queue.shift();
+let players_queue : PlayerId[]; //A queue of current waiting players (id)
+
 
 // Define the root path with a greeting message
 app.get("/", (req: Request, res: Response) => {
@@ -35,24 +28,33 @@ app.get("/", (req: Request, res: Response) => {
 // Start the Express server
 app.listen(port, () => {
     console.log(`The server is running at http://localhost:${port}`);
-});
+}); 
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
+function createGame(player_id_1 : PlayerId, player_id_2 : PlayerId | undefined){
+
+    let cards : Card[] = [];
+    //get a random cards 
+
+
+
+
+    let game : GameState = {player1Id : "2", player2Id : "2", player1exp : [], player2exp : [], currentTurn : 1, availableCards : cards};
+
+
+
+    return ;
+}
+
+
 io.on('connection', (socket) => {
-    
+ 
+    //There is someone in queue
+    if (players_queue.length > 0){
+        createGame(socket.id, players_queue.shift());
+    }
+    else{
+        players_queue.push(socket.id);
+    }
+
 })
-=======
-
-=======
->>>>>>> Stashed changes
-
-
-
-
-
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
-
->>>>>>> Stashed changes
