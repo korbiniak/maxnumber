@@ -1,32 +1,23 @@
+import React, { useEffect, useState } from "react";
 import {socket} from "./socket";
 import './App.css'
-import { useEffect} from "react";
-
 
 function App() {
-  console.log("test");
+    const [status, setStatus] = useState("Łączenie z serwerem...");
 
-  useEffect(()=>{
-    
+    useEffect(() => {
+        setStatus("Oczekiwanie na drugiego gracza…");
 
+        socket.on("update-state", () => {
+            setStatus("Gra się rozpoczyna!");
+        });
+    }, []);
 
-    socket.on("update-state", (data)=>{
-      console.log("UU:", data);
-    });
-
-
-  }, []);
-
-
-
-
-  return (
-    <>
-      <div>
-        oh
-       </div>
-    </>
-  )
+    return (
+        <div style={{ textAlign: "center", marginTop: "100px", fontSize: "24px" }}>
+            <h1>{status}</h1>
+        </div>
+    );
 }
 
-export default App
+export default App;

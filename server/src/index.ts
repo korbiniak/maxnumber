@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { GameState, SERVER_PORT, PlayerId, SERVER_ORIGIN, initGameState} from "shared";
+import { GameState, SERVER_PORT, SERVER_ORIGIN, initGameState, PlayerId, Card, NUMBER_DIGIT_CARDS_IN_GAME, ALL_DIGIT_CARDS, NUMBER_OPERATION_CARDS_IN_GAME, ALL_OPERATION_CARDS} from "shared";
 import http from "http";
 import {Server} from "socket.io";
 
@@ -8,13 +8,14 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors : {
-        origin : SERVER_ORIGIN 
+        origin : SERVER_ORIGIN
     }
 });
 
 
 
 const players_games_id = new Map(); //Player game id
+
 const current_games = new Map(); //A dict with current games {id : game}
 let last_game_id = 0; //Last game id (to get a new one)
 
@@ -33,10 +34,8 @@ server.listen(SERVER_PORT, () => {
 
 
 
-
 //Emit actual state of game to players
 function emitGameState(game_id : number) : void{
-
     const game : GameState = current_games.get(game_id); 
 
     io.to([game.player1Id, game.player2Id]).emit("update-state", {game_id : game_id, game : game});
@@ -75,7 +74,6 @@ function deleteGame(gameIdx : number | undefined){
     players_games_id.delete(game.player2Id);
 
     io.to([game.player1Id, game.player2Id]).emit("update-state");
-   
 }
 
 
@@ -91,13 +89,9 @@ io.on('connection', (socket) => {
         players_queue.push(socket.id);
     }
 
-
-
     socket.on('disconnect', () => {
-        
         let gameIdx : number | undefined = players_games_id.get(socket.id);
         deleteGame(gameIdx);
-        
 
         //delete player from queue
         const player_idx = players_queue.indexOf(socket.id);
@@ -106,5 +100,4 @@ io.on('connection', (socket) => {
         }
         console.log(current_games);
     });
-
-})
+});
