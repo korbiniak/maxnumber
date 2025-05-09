@@ -56,8 +56,7 @@ function emit_game_state(game_id : number) : void{
 
     const game : GameState = current_games.get(game_id); 
 
-    io.to(game.player1Id).emit("update-state", {game_id : game_id, game : game});
-    io.to(game.player2Id).emit("update-state", {game_id : game_id, game : game});
+    io.to([game.player1Id, game.player2Id]).emit("update-state", {game_id : game_id, game : game});
 }
 
 
