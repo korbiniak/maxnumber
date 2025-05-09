@@ -1,8 +1,12 @@
 import express, { Request, Response } from "express";
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import { GameState } from "shared";
 import http from "http";
 import {Server} from "socket.io";
+=======
+import { GameState, SERVER_PORT } from "../../shared";
+>>>>>>> Stashed changes
 =======
 import { GameState, SERVER_PORT } from "../../shared";
 >>>>>>> Stashed changes
@@ -34,14 +38,21 @@ app.listen(port, () => {
 });
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 io.on('connection', (socket) => {
     
 })
 =======
 
+=======
+>>>>>>> Stashed changes
 
 
 
 
+
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 
 >>>>>>> Stashed changes
