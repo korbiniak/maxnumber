@@ -1,33 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { io, Socket} from "socket.io-client";
 import './App.css'
+import { useEffect, useRef } from "react";
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  console.log("test");
+  const socketRef = useRef<Socket | null>(null);
+
+  useEffect(()=>{
+    
+    //There exist already an connection!
+    if (socketRef.current) return;
+
+    //Connect with socket
+    const socket = io("http://localhost:3001");
+    socketRef.current = socket;
+
+    socket.on("update-state", (data)=>{
+      console.log(data);
+    });
+
+
+  }, []);
+
+
+
 
   return (
     <>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+        oh
+       </div>
     </>
   )
 }
