@@ -73,7 +73,7 @@ function deleteGame(gameIdx : number | undefined){
     players_games_id.delete(game.player1Id);
     players_games_id.delete(game.player2Id);
 
-    io.to([game.player1Id, game.player2Id]).emit("update-state");
+    io.to([game.player1Id, game.player2Id]).emit("update-state", {});
 }
 
 

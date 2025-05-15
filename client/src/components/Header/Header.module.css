@@ -1,9 +1,11 @@
+
+
 .header {
   display: flex;
   gap: 16px; /* odstęp między tabami */
   padding: 12px 24px;
-  background-color: #f5f5f5;
-  border-bottom: 2px solid #ccc; /* pasek oddzielający */
+  align-items: center;
+  justify-content: center;
 }
 
 .tab {

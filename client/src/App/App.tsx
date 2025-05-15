@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
 import styles from "./App.module.css";
-import Header from "../Header/Header";
-import MainView from "../MainView/MainView";
-import Footer from "../Footer/Footer";
+import "../styles/main.css";
+import Header from "../components/Header/Header";
+import MainView from "../pages/GameView/GameView";
+import Footer from "../components/Footer/Footer";
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
         <Header/>
       </div>
 
-      <div className = {styles.app_MainView}>
+      <div className = {styles.app_GameView}>
         <MainView/>
       </div>
 

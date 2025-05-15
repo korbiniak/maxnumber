@@ -1,6 +1,6 @@
 import React from "react";
 import type { Expression, Card} from "shared";
-import styles from "./RenderPlayerCards.module.css";
+import styles from "../../styles/card.module.css";
 
 type Props = {
     cards : Card[];

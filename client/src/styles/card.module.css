@@ -1,0 +1,32 @@
+.card {
+    width: 120px;
+    height: 180px;
+    background-color: var(--card);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .card:hover{
+    transform: scale(1.2);
+  }
+  
+  .card_list {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem; /* spory odstęp między kartami */
+    flex-wrap: wrap;
+    padding: 1rem;
+    
+    align-items: center;
+    justify-content: center;
+
+    max-width: 2000px;
+  }
+  
