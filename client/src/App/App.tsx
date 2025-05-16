@@ -1,8 +1,11 @@
 import styles from "./App.module.css";
 import "../styles/main.css";
 import Header from "../components/Header/Header";
-import MainView from "../pages/GameView/GameView";
+import GameView from "../pages/GameView/GameView";
 import Footer from "../components/Footer/Footer";
+import {BrowserRouter, Routes, Route} from "react-router-dom";
+import Rooms from "../pages/Rooms/Rooms";
+import About from "../pages/About/About";
 
 function App() {
   return (
@@ -12,9 +15,18 @@ function App() {
         <Header/>
       </div>
 
-      <div className = {styles.app_GameView}>
-        <MainView/>
+
+      <div className={styles.app_mainView}>
+
+        <Routes>
+          <Route path="/" element={<GameView/> } />
+          <Route path="/rooms" element={<Rooms/> } />
+          <Route path="/about" element={<About/> } />
+        </Routes>
+
       </div>
+
+
 
       <div className = {styles.app_footer}>
         <Footer/>

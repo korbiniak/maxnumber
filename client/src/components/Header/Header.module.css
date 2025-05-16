@@ -1,6 +1,19 @@
 
+.header{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
 
-.header {
+.left{
+  position: absolute;
+  left: 40px;
+
+  font-size: 30px;
+}
+
+.main {
   display: flex;
   gap: 16px; /* odstęp między tabami */
   padding: 12px 24px;
@@ -13,6 +26,11 @@
   cursor: pointer;
   border-radius: 6px;
   transition: background-color 0.2s ease;
+  
+  font-size: 32px;
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
 }
 
 .tab:hover {

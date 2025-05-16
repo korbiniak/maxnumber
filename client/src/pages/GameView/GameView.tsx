@@ -43,7 +43,7 @@ function GameView() {
   if (!game) {
     return (
       <>
-        <div className={styles.container}>oczekiwanie na gracza ...</div>
+        <div className={styles.container}>Waiting for the opponent...</div>
         {showAlert && (
           <Alert
             message="Drugi gracz opuścił grę!"
@@ -60,6 +60,8 @@ function GameView() {
   const enemyCards: Card[] =
     socket.id === game.player1Id ? game.player2exp : game.player1exp;
 
+  const myPlayerNumber = socket.id === game.player1Id ? 1 : 2;
+
   const availableCards: Card[] = game.availableCards;
 
   return (
@@ -69,8 +71,17 @@ function GameView() {
       </div>
 
       <div className={styles.middle}>
+
+        <div className={styles.leftInfo}>
+            {myPlayerNumber === game.currentTurn ? "Your turn" : "Opponent's turn"}
+        </div>
+
         <div className={styles.available}>
           <RenderAvailableCards cards={availableCards} />
+        </div>
+
+        <div className={styles.rightInfo}>
+           
         </div>
       </div>
 

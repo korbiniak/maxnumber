@@ -18,17 +18,34 @@
   flex: 2;
   display: flex;
   flex-direction: row;
-  position: relative;
 
   padding: 50px 0px 50px 0px;
 }
 
-/* Dostępne karty – po lewej */
-.available {
+.leftInfo{
+  flex: 1;
+  text-align: center;
+  font-weight: bolder;
+  font-size: larger;
+
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
+
+/* Dostępne karty – po lewej */
+.available {
+  flex: 7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rightInfo{
+  flex: 1;
+}
+
 
 
 /* Dół – twoje karty */

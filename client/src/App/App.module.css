@@ -14,7 +14,7 @@ html, body {
   background-color: var(--header);
 }
 
-.app_GameView {
+.app_mainView {
   flex: 1; /* wypełnia całą dostępną przestrzeń */
   background-color: var(--bg2);
   padding: 24px;
