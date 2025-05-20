@@ -1,13 +1,22 @@
-import type { GameState, SERVER_PORT, PlayerId, Card, NUMBER_DIGIT_CARDS_IN_GAME, ALL_DIGIT_CARDS, NUMBER_OPERATION_CARDS_IN_GAME, ALL_OPERATION_CARDS} from "shared";
+import type {
+  GameState,
+  PlayerId,
+  Room
+} from "shared";
+
 import { io, Socket } from "socket.io-client";
 
 interface ServerToClientEvents {
-  "update-state": (data: { game_id: number; game: GameState }) => void;
+  "update-state": (data: { gameId: number; game: GameState }) => void;
+  "room-list": (rooms: Room[]) => void;
+  "room-joined": (roomId: string) => void;
+  "error": (message: string) => void;
 }
 
-
 interface ClientToServerEvents {
-  "make-move": (data : PlayerId) => void;
+  "create-room": (roomId: string) => void;
+  "join-room": (roomId: string) => void;
+  "make-move": (playerId: PlayerId) => void;
 }
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io("http://localhost:3001");

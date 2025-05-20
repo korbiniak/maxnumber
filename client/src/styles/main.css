@@ -1,0 +1,17 @@
+:root{
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-family: 'Courier New', Courier, monospace !important;
+
+
+    --header: #e2e6e6;
+    --footer: #e2e6e6;
+    --bg1: #e2e6e6;
+    --bg2: #F0F2F2;
+    --card: #9e5949;
+
+    
+    background-color: var(--bg1);
+
+}
+

@@ -1,0 +1,38 @@
+.container{
+    display: flex;
+    align-items: center;    
+    justify-content: center;
+}
+
+
+.left{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.middle{
+    flex: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+.roomButton{
+    min-width: 500px;
+    min-height: 50px;
+
+}
+  
+button{   
+     background-color:lightgray !important;
+}
+
+button:hover{   
+    background-color: rgb(177, 177, 177) !important;
+}
