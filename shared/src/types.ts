@@ -14,4 +14,5 @@ export interface GameState {
   player2Id: PlayerId;
   currentTurn: 1 | 2;
   availableCards: Card[];
+  id : number;
 }

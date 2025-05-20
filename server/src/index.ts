@@ -35,18 +35,23 @@ server.listen(SERVER_PORT, () => {
 
 
 //Emit actual state of game to players
-function emitGameState(game_id : number) : void{
-    const game : GameState = current_games.get(game_id); 
+function emitGameState(gameId: number) {
+  const game = current_games.get(gameId);
+  if (!game) {
+    //console.error("emitGameState: Nie znaleziono gry o id", gameId);
+    return;
+  }
 
-    io.to([game.player1Id, game.player2Id]).emit("update-state", {game_id : game_id, game : game});
+  io.to([game.player1Id, game.player2Id]).emit("update-state", { game_id: gameId, game : game });
 }
+
 
 //Create new game and add it to the queue
 function createGame(player1Id : string, player2Id : string){
-    let game : GameState = initGameState(player1Id, player2Id);
 
     const game_id = last_game_id + 1;
     last_game_id = game_id;
+    let game : GameState = initGameState(player1Id, player2Id, game_id);
 
     current_games.set(game_id, game);
 
@@ -54,7 +59,7 @@ function createGame(player1Id : string, player2Id : string){
 
     players_games_id.set(player1Id, game_id);
     players_games_id.set(player2Id, game_id);
-
+    //console.log(" stworzylismy gre ", game, " z id ", game_id);
 }
 
 //Delete a game if it exists
@@ -78,7 +83,38 @@ function deleteGame(gameIdx : number | undefined){
 
 
 io.on('connection', (socket) => {
+    socket.on("move-card", (data) => {
+        const { gameId, target, card, index } = data;
 
+        console.log("Ruch gracza:", data); // np. data.card, data.target, data.index
+
+        const game = current_games.get(gameId);
+        if (!game) {
+            console.log("Nie znaleziono gry");
+            return;
+        }
+
+        const isPlayer1 = socket.id === game.player1Id;
+
+        if (target === "my") {
+            const exp = isPlayer1 ? game.player1exp : game.player2exp;
+            exp.splice(index, 0, card);
+            console.log("dodajemy karte do wyrazenia ", exp , " w miejscu ", index);
+        } else if (target === "enemy") {
+            const exp = isPlayer1 ? game.player2exp : game.player1exp;
+            exp.splice(index, 0, card);
+            console.log("dodajemy karte do wyrazenia ", exp , " w miejscu ", index);
+        }
+
+        const cardIndex = game.availableCards.indexOf(card);
+        if (cardIndex !== -1) {
+            game.availableCards.splice(cardIndex, 1);
+        }
+        if(game.currentTurn === 1) game.currentTurn = 2;
+        else game.currentTurn = 1;
+        emitGameState(game.id);
+        console.log(" robimy update : ", game);
+    });
 
     //There is someone already in queue
     if (players_queue.length > 0){
@@ -98,6 +134,6 @@ io.on('connection', (socket) => {
         if (player_idx != -1){
             players_queue.splice(players_queue.indexOf(socket.id), 1);
         }
-        console.log(current_games);
+        //console.log(current_games);
     });
 });

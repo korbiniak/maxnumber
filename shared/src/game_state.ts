@@ -4,7 +4,7 @@ import { PlayerId, Card, GameState } from "./types";
 
 
 //Create a game for two players and return an instance of game state
-export function initGameState(player_id_1 : PlayerId, player_id_2 : PlayerId) : GameState{
+export function initGameState(player_id_1 : PlayerId, player_id_2 : PlayerId, Id : number) : GameState{
 
     let cards : Card[] = [];
     //get a random cards 
@@ -18,7 +18,7 @@ export function initGameState(player_id_1 : PlayerId, player_id_2 : PlayerId) : 
 
 
     //Init a game
-    let game : GameState = {player1Id : player_id_1, player2Id : player_id_2, player1exp : [1], player2exp : [1], currentTurn : (Math.floor(Math.random() * 2) + 1 as 1 | 2), availableCards : cards};
+    let game : GameState = {player1Id : player_id_1, player2Id : player_id_2, player1exp : [1], player2exp : [1], currentTurn : (Math.floor(Math.random() * 2) + 1 as 1 | 2), availableCards : cards, id : Id};
 
     return game;
 }
