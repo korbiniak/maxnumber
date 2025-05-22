@@ -1,16 +1,15 @@
-import React from "react";
-import type { Expression, Card} from "shared";
+import type { Card } from "shared";
 import styles from "../../styles/card.module.css";
 
 type Props = {
-    cards : Card[];
-}
+  cards: Card[];
+};
 
-function RenderPlayerCards( { cards } : Props){
-    if (!cards || cards.length === 0) {
-        return <p>Brak kart</p>;
-    }
-    return (
+function Cards({ cards }: Props) {
+   if (!cards || cards.length === 0) {
+    return <p>Brak kart</p>;
+  }
+  return (
     <div>
       <ul className={styles.card_list}>
         {cards.map((card, i) => (
@@ -23,4 +22,4 @@ function RenderPlayerCards( { cards } : Props){
   );
 }
 
-export default RenderPlayerCards;
+export default Cards;

@@ -33,7 +33,7 @@ export default function About(){
         </div>
     
 
-        <div className={style.aboutFramal}>
+        <div className={style.about}>
             <h1>About Framal</h1>
             <p>
                 My name is Franciszek Malinka, I’m a young programmer interested in Linux kernel, OCaml, bouldering, investing, music, my wife and coffee.
@@ -43,7 +43,7 @@ export default function About(){
         </div>
 
 
-        <div className={style.aboutMpdoge}>
+        <div className={style.about}>
             <h1>About Mpdoge</h1>
             <p>
                 My name is Miłosz Popowicz. I'm programmer with math skills. In my free time I like playing Fortnite :D XD
@@ -51,7 +51,7 @@ export default function About(){
 
         </div>
 
-        <div className={style.aboutTapik}>
+        <div className={style.about}>
             <h1>About Tapik</h1>
             <p>
             My name is Szymon Krzywda. I'm a competitive programmer with success in the Polish Olympiad in Informatics. In my free time, I enjoy web development and doing some math as well. I also volunteered at the Olympiad Computer Science Club (Olimpijskie Koło Informatyczne), where I helped young students prepare for the Olympiad.

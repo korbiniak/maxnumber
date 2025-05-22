@@ -2,9 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./GameView.module.css";
 import socket from "../../socket";
 import type { GameState, Card } from "shared";
-import RenderPlayerCards from "../../components/RenderPlayerCards/RenderPlayerCards";
-import RenderAvailableCards from "../../components/RenderAvailableCards/RenderAvailableCards";
 import Alert from "../../components/Alert/Alert";
+import Cards from "../../components/Cards/Cards";
 
 function GameView() {
   const [game, setGame] = useState<GameState | undefined>(undefined);
@@ -54,20 +53,23 @@ function GameView() {
     );
   }
 
-  const myCards: Card[] =
-    socket.id === game.player1Id ? game.player1exp : game.player2exp;
-
-  const enemyCards: Card[] =
-    socket.id === game.player1Id ? game.player2exp : game.player1exp;
 
   const myPlayerNumber = socket.id === game.player1Id ? 1 : 2;
+  
+  let myCards: Card[] = [];
+  if (myPlayerNumber === 1) myCards = game.player1exp;
+  else myCards = game.player2exp;
+
+  let enemyCards: Card[] = [];
+  if (myPlayerNumber === 1) enemyCards = game.player2exp;
+  else myCards = game.player1exp;
 
   const availableCards: Card[] = game.availableCards;
 
   return (
     <div className={styles.container}>
       <div className={styles.enemies}>
-        <RenderPlayerCards cards={enemyCards} />
+        <Cards cards={enemyCards} />
       </div>
 
       <div className={styles.middle}>
@@ -77,7 +79,7 @@ function GameView() {
         </div>
 
         <div className={styles.available}>
-          <RenderAvailableCards cards={availableCards} />
+          <Cards cards={availableCards} />
         </div>
 
         <div className={styles.rightInfo}>
@@ -86,7 +88,7 @@ function GameView() {
       </div>
 
       <div className={styles.mine}>
-        <RenderPlayerCards cards={myCards} />
+        <Cards cards={myCards} />
       </div>
     </div>
   );
