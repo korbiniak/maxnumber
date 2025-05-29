@@ -1,174 +1,138 @@
-import { useEffect, useRef, useState } from "react";
-import styles from "./GameView.module.css";
-import socket from "../../socket";
-import type { GameState, Card } from "shared";
-import RenderPlayerCards from "../../components/RenderPlayerCards/RenderPlayerCards";
-import RenderAvailableCards from "../../components/RenderAvailableCards/RenderAvailableCards";
-import Alert from "../../components/Alert/Alert";
-import {
-  DndContext,
-  closestCenter,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  rectSortingStrategy,
-} from "@dnd-kit/sortable";
+// src/pages/GameView/GameView.tsx
+import React,{useEffect,useRef,useState} from"react";
+import styles from"./GameView.module.css";
+import cardStyles from"../../styles/card.module.css";
+import socket from"../../socket";
+import type{Card,GameState,Expression} from"shared";
+import{isExpressionValid,evaluateExpression}from"shared";
+import RenderPlayerCards from"../../components/RenderPlayerCards/RenderPlayerCards";
+import RenderAvailableCards from"../../components/RenderAvailableCards/RenderAvailableCards";
+import Alert from"../../components/Alert/Alert";
+import ScoreModal from"../../components/ScoreModal/ScoreModal";
+import{DndContext,PointerSensor,closestCenter,useSensor,useSensors,type DragStartEvent,type DragEndEvent,DragOverlay}from"@dnd-kit/core";
+import{SortableContext}from"@dnd-kit/sortable";
 
-function GameView() {
-  const [game, setGame] = useState<GameState | undefined>(undefined);
-  const [gameId, setGameId] = useState<number | undefined>(undefined);
-  const gameIdRef = useRef<number | undefined>(undefined);
-  const [showAlert, setShowAlert] = useState(false);
+function GameView(){
+  const[game,setGame]=useState<GameState>();
+  const[gameId,setGameId]=useState<number>();
+  const gameIdRef=useRef<number|undefined>(undefined);
 
-  const [availableCards, setAvailableCards] = useState<Card[]>([]);
-  const [myCards, setMyCards] = useState<Card[]>([]);
-  const [enemyCards, setEnemyCards] = useState<Card[]>([]);
-  const [turn , setTurn] = useState<number>(1);
-  const [Player1Id , setPlayer1Id] = useState<string>("");
-  const [Player2Id , setPlayer2Id] = useState<string>("");
+  const[showAlert,setShowAlert]=useState(false);
+  const[invalidMove,setInvalidMove]=useState(false);
+  const[winner,setWinner]=useState<{result:"win"|"lose"|"draw";my:number;enemy:number}|null>(null);
 
-  const sensors = useSensors(useSensor(PointerSensor));
+  const[availableCards,setAvailableCards]=useState<Card[]>([]);
+  const[myCards,setMyCards]=useState<Card[]>([]);
+  const[enemyCards,setEnemyCards]=useState<Card[]>([]);
+  const[draggedCard,setDraggedCard]=useState<Card|null>(null);
 
-  useEffect(() => {
-    gameIdRef.current = gameId;
-  }, [gameId]);
+  const[turn,setTurn]=useState(1);
+  const[player1Id,setPlayer1Id]=useState("");
+  const[player2Id,setPlayer2Id]=useState("");
 
-  useEffect(() => {
-    const handleUpdateState = (data: { game_id?: number; game: GameState }) => {
-      const { game_id, game } = data;
+  const sensors=useSensors(useSensor(PointerSensor));
+
+  useEffect(()=>{gameIdRef.current=gameId;},[gameId]);
+
+  useEffect(()=>{
+    const h=(d:{game_id?:number;game:GameState})=>{
+      const{game_id,game}=d;
       setGame(game);
       setGameId(game_id);
-      console.log(" ustawilismy gre na ", game);
-      if (gameIdRef.current && game_id === undefined) {
+      if(gameIdRef.current&&game_id===undefined){
         setShowAlert(true);
-        setTimeout(() => setShowAlert(false), 3001);
+        setTimeout(()=>setShowAlert(false),3000);
       }
     };
-    socket.on("update-state", handleUpdateState);
-    return () => void socket.off("update-state", handleUpdateState);
-  }, []);
+    socket.on("update-state",h);
+    return()=>{socket.off("update-state",h);};
+  },[]);
 
-  useEffect(() => {
-    if (game) {
-      const isPlayer1 = socket.id === game.player1Id;
-      setMyCards(isPlayer1 ? game.player1exp : game.player2exp);
-      setEnemyCards(isPlayer1 ? game.player2exp : game.player1exp);
-      setAvailableCards(game.availableCards);
-      setTurn(game.currentTurn);
-      setPlayer1Id(game.player1Id);
-      setPlayer2Id(game.player2Id);
-      //console.log("ustawiamy karty moje i przeciwnika na ", myCards, " i ", enemyCards);
+  useEffect(()=>{
+    if(!game)return;
+    const p1=socket.id===game.player1Id;
+    setMyCards(p1?game.player1exp:game.player2exp);
+    setEnemyCards(p1?game.player2exp:game.player1exp);
+    setAvailableCards(game.availableCards);
+    setTurn(game.currentTurn);
+    setPlayer1Id(game.player1Id);
+    setPlayer2Id(game.player2Id);
+    setWinner(null);
+  },[game]);
+
+  useEffect(()=>{
+    if(availableCards.length===0){
+      const myScore=evaluateExpression(myCards as Expression);
+      const enemyScore=evaluateExpression(enemyCards as Expression);
+      const res=myScore>enemyScore?"win":myScore<enemyScore?"lose":"draw";
+      setWinner({result:res,my:myScore,enemy:enemyScore});
     }
-  }, [game]);
-    const isMyTurn =  (turn === 1 && Player1Id === socket.id) || (turn === 2 && Player2Id === socket.id);
-  function handleDragEnd(event: DragEndEvent) {
-    if(!isMyTurn) return;
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
+  },[availableCards,myCards,enemyCards]);
 
-    const activeType = active.data.current?.type;
-    const activeCard: Card = active.data.current?.card;
-    const overId = over.id;
-    const overList = over.data.current?.droppable;
+  const isMyTurn=(turn===1&&player1Id===socket.id)||(turn===2&&player2Id===socket.id);
 
-    if (activeType !== "available" || !gameId || !overList) return;
+  function handleDragStart(e:DragStartEvent){setDraggedCard(e.active.data.current?.card??null);}
 
-    const updatedAvailable = [...availableCards];
-    const activeIndex = updatedAvailable.findIndex((c, i) => `available-${c}-${i}` === active.id);
-    if (activeIndex !== -1) {
-      updatedAvailable.splice(activeIndex, 1);
-      setAvailableCards(updatedAvailable);
-    }
+  function handleDragEnd(e:DragEndEvent){
+    setDraggedCard(null);
+    const{active,over}=e;
+    if(!isMyTurn||!over)return;
 
-    if (overList === "my") {
-      const insertIndex =
-        overId === "my-end"
-          ? myCards.length
-          : myCards.findIndex((c, i) => `my-${c}-${i}` === overId);
+    const from=active.data.current?.droppable;
+    const to=over.data.current?.droppable as"my"|"enemy"|"available"|undefined;
+    if(to!=="my"&&to!=="enemy")return;
+    if(from!=="available"||!gameId)return;
 
-      const updatedMy = [...myCards];
-      const finalIndex = insertIndex !== -1 ? insertIndex : updatedMy.length;
-      updatedMy.splice(finalIndex, 0, activeCard);
-      setMyCards(updatedMy);
+    const card=active.data.current?.card as Card;
+    const srcIdx=active.data.current?.index as number;
+    const slotIdx=over.data.current?.slotIndex as number;
 
-      socket.emit("move-card", {
-        gameId,
-        target: "my",
-        card: activeCard,
-        index: finalIndex,
-      });
+    const clone=(arr:Card[])=>{const n=[...arr];n.splice(slotIdx,0,card);return n;};
+    const candidate=to==="my"?clone(myCards):clone(enemyCards);
+
+    if(!isExpressionValid(candidate as Expression)){
+      setInvalidMove(true);setTimeout(()=>setInvalidMove(false),2000);return;
     }
 
-    if (overList === "enemy") {
-      const insertIndex =
-        overId === "enemy-end"
-          ? enemyCards.length
-          : enemyCards.findIndex((c, i) => `enemy-${c}-${i}` === overId);
-
-      const updatedEnemy = [...enemyCards];
-      const finalIndex = insertIndex !== -1 ? insertIndex : updatedEnemy.length;
-      updatedEnemy.splice(finalIndex, 0, activeCard);
-      setEnemyCards(updatedEnemy);
-
-      socket.emit("move-card", {
-        gameId,
-        target: "enemy",
-        card: activeCard,
-        index: finalIndex,
-      });
-    }
+    setAvailableCards(p=>p.filter((_,i)=>i!==srcIdx));
+    to==="my"?setMyCards(candidate):setEnemyCards(candidate);
+    socket.emit("move-card",{gameId,target:to,card,index:slotIdx});
   }
 
-  const generateKeys = (cards: Card[], prefix: string) =>
-    [...cards.map((c, i) => `${prefix}-${c}-${i}`), `${prefix}-end`];
-
-
-  //console.log(" czy jest moja kolej ?  ", isMyTurn);
-  return (
+  return(
     <div className={styles.container}>
-      {!game ? (
+      {!game?(
         <>
-          <div>Waiting for the opponent...</div>
-          {showAlert && (
-            <Alert
-              message="Second player left the game!"
-              deleteMessage={() => setShowAlert(false)}
-            />
-          )}
+          <div>You have to join a room first</div>
+          {showAlert&&<Alert message="Second player left the game!" deleteMessage={()=>setShowAlert(false)}/>}
         </>
-      ) : (
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <div className={styles.enemies}>
-            <SortableContext items={generateKeys(enemyCards, "enemy")} strategy={rectSortingStrategy}>
-              <RenderPlayerCards cards={enemyCards} droppableType="enemy" />
-            </SortableContext>
-          </div>
-
-          <div className={styles.middle}>
-            <div className={styles.leftInfo}>
-              {isMyTurn ? "Your turn" : "Opponent's turn"}
+      ):(
+        <>
+          {invalidMove&&<Alert message="Invalid expression! Move cancelled." deleteMessage={()=>setInvalidMove(false)}/>}
+          {winner&&<ScoreModal result={winner.result} my={winner.my} enemy={winner.enemy} onClose={()=>setWinner(null)}/>}
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+            <div className={styles.enemies}>
+              <RenderPlayerCards cards={enemyCards} droppableType="enemy"/>
             </div>
-
-            <div className={styles.available}>
-              <RenderAvailableCards cards={availableCards} />
+            <div className={styles.middle}>
+              <div className={styles.leftInfo}>{isMyTurn?"Your turn":"Opponent's turn"}</div>
+              <div className={styles.available}>
+                <SortableContext items={availableCards.map((_,i)=>`available-${i}`)}>
+                  <RenderAvailableCards cards={availableCards}/>
+                </SortableContext>
+              </div>
+              <div className={styles.rightInfo}/>
             </div>
-
-            <div className={styles.rightInfo}></div>
-          </div>
-
-          <div className={styles.mine}>
-            <SortableContext items={generateKeys(myCards, "my")} strategy={rectSortingStrategy}>
-              <RenderPlayerCards cards={myCards} droppableType="my" />
-            </SortableContext>
-          </div>
-        </DndContext>
+            <div className={styles.mine}>
+              <RenderPlayerCards cards={myCards} droppableType="my"/>
+            </div>
+            <DragOverlay dropAnimation={null}>
+              {draggedCard&&<div className={cardStyles.card}>{draggedCard}</div>}
+            </DragOverlay>
+          </DndContext>
+        </>
       )}
     </div>
   );
 }
-
 export default GameView;

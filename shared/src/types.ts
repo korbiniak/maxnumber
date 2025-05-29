@@ -7,6 +7,14 @@ export type Card = Digit | Operation;
 
 export type Expression = Card[];
 
+export type Room = {
+  name : string;
+  gameId? : number;
+  player1 : string;
+  player2? : string;
+  playersNum : number;
+}
+
 export interface GameState {
   player1exp: Expression;
   player2exp: Expression;
