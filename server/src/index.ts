@@ -24,6 +24,7 @@ server.listen(SERVER_PORT, () => {
 
 
 const rooms = new Map<string, Room>();
+const waiting_players = new Set<string>();
 const current_games = new Map<number, GameState>();
 const players_games_id = new Map<string, number>();
 let last_game_id = 0;
@@ -78,14 +79,26 @@ function tryJoinRoom(socket: Socket, roomId: string): void {
     const room = rooms.get(roomId);
 
     if (!room) {
-        socket.emit("error", "Pokój nie istnieje");
+        socket.emit("error", "Pokój nie istnieje!");
         return;
+    }
+
+    if (players_games_id.has(socket.id)) {
+      socket.emit("error", "Jesteś aktualnie w grze!");
+      return;
+    }
+
+    if (waiting_players.has(socket.id)) {
+      socket.emit("error", "Usuń swój pokój!");
+      return;
     }
 
     if (room.playersNum === 2) {
         socket.emit("error", "Pokój jest pełny");
         return;
     }
+
+    waiting_players.delete(room.player1);
     io.to([socket.id, room.player1]).emit("room-joined", roomId);
     room.player2 = socket.id;
     room.playersNum = 2;
@@ -95,7 +108,18 @@ function tryJoinRoom(socket: Socket, roomId: string): void {
 }
 
 
+function deleteRoom(roomId : string | null){
+  if (roomId == null) return;
+  const room = rooms.get(roomId);
+  if (!room) return;
+  rooms.delete(roomId);
+  waiting_players.delete(room.player1);
+}
+
 io.on("connection", (socket) => {
+
+  let waiting_room_id : string | null = null;
+
   console.log(`Nowe połączenie: ${socket.id}`);
 
   socket.emit("room-list", Array.from(rooms.values()));
@@ -104,18 +128,46 @@ io.on("connection", (socket) => {
 
   socket.on("create-room", (roomId: string) => {
     if (rooms.has(roomId)) {
-      socket.emit("error", "Pokój już istnieje");
+      socket.emit("error", "Pokój już istnieje!");
+      return;
+    }
+
+    if (players_games_id.has(socket.id)) {
+      socket.emit("error", "Jesteś aktualnie w grze!");
+      return;
+    }
+
+    if (waiting_players.has(socket.id)) {
+      socket.emit("error", "Usuń stary pokój!");
       return;
     }
 
     const room: Room = { name: roomId, player1 : socket.id, playersNum : 1};
+    waiting_room_id = roomId;
     rooms.set(roomId, room);
+    waiting_players.add(socket.id);
     broadcastRoomList();
   });
+
 
   socket.on("join-room", (roomId: string) => {
     tryJoinRoom(socket, roomId);
   });
+
+  socket.on("delete-room", (roomId : string) => {
+    deleteRoom(roomId);
+  });
+
+  socket.on("delete-game", () => {
+    const game_id = players_games_id.get(socket.id);
+    if (!game_id) return;
+    const game = current_games.get(game_id);
+    if (!game) return;
+    deleteGame(game_id);
+    deleteRoom(waiting_room_id);
+    io.to([game?.player1Id, game?.player2Id]).emit("game-deleted", {});
+  });
+
 
   socket.on("move-card", (data) => {
         const { gameId, target, card, index } = data;
@@ -150,10 +202,12 @@ io.on("connection", (socket) => {
         console.log(" robimy update : ", game);
     });
 
+
   socket.on("disconnect", () => {
     console.log(`Rozłączono: ${socket.id}`);
     const gameId = players_games_id.get(socket.id);
     deleteGame(gameId);
+    deleteRoom(waiting_room_id);
     broadcastRoomList();
   });
 });

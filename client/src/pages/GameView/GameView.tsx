@@ -1,5 +1,5 @@
 // src/pages/GameView/GameView.tsx
-import React,{useEffect,useRef,useState} from"react";
+import {useEffect,useRef,useState} from"react";
 import styles from"./GameView.module.css";
 import cardStyles from"../../styles/card.module.css";
 import socket from"../../socket";

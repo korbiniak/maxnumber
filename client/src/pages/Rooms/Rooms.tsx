@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import socket, { connectSocket } from "../../socket";
 import type { Room } from "shared";
 import styles from "./Rooms.module.css";
-import RenderPlayerCards from "../../components/RenderPlayerCards/RenderPlayerCards";
 
 export default function Rooms() {
   const [roomName, setRoomName] = useState("");
@@ -19,13 +18,7 @@ export default function Rooms() {
         console.log(" pokoje : ", rooms);
     });
 
-    socket.on("room-joined", (name : string) => {
-      navigate("/");
-      console.log(" zaczynamy gre w pokoju ", name);
-    });
-    socket.on("update-state", () =>{
-
-    });
+    
     socket.on("error", (msg : string) => {
       alert("Błąd: " + msg);
     });
