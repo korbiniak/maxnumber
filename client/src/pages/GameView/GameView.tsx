@@ -17,7 +17,8 @@ function GameView(){
   const[gameId,setGameId]=useState<number>();
   const gameIdRef=useRef<number|undefined>(undefined);
 
-  const[showAlert,setShowAlert]=useState(false);
+  const[showAlert,setShowAlert] = useState(false);
+  const iDeleted = useRef<boolean>(false);
   const[invalidMove,setInvalidMove]=useState(false);
   const[winner,setWinner]=useState<{result:"win"|"lose"|"draw";my:number;enemy:number}|null>(null);
 
@@ -35,17 +36,26 @@ function GameView(){
   useEffect(()=>{gameIdRef.current=gameId;},[gameId]);
 
   useEffect(()=>{
+    socket.emit("get-game");
+
     const h=(d:{game_id?:number;game:GameState})=>{
+      if (!d) return;
+
       const{game_id,game}=d;
       setGame(game);
       setGameId(game_id);
-      if(gameIdRef.current&&game_id===undefined){
+      console.log("I deleted", iDeleted);
+      if(gameIdRef.current && game_id===undefined && !iDeleted.current){
         setShowAlert(true);
-        setTimeout(()=>setShowAlert(false),3000);
+        setTimeout(()=>setShowAlert(false),4000);
       }
+      iDeleted.current = false;
     };
+
     socket.on("update-state",h);
-    return()=>{socket.off("update-state",h);};
+    return()=>{
+      socket.off("update-state",h);
+    };
   },[]);
 
   useEffect(()=>{
@@ -61,11 +71,12 @@ function GameView(){
   },[game]);
 
   useEffect(()=>{
-    if(availableCards.length===0){
+    if(game && availableCards.length===0){
       const myScore=evaluateExpression(myCards as Expression);
       const enemyScore=evaluateExpression(enemyCards as Expression);
       const res=myScore>enemyScore?"win":myScore<enemyScore?"lose":"draw";
       setWinner({result:res,my:myScore,enemy:enemyScore});
+      socket.emit("delete-game");
     }
   },[availableCards,myCards,enemyCards]);
 
@@ -101,15 +112,15 @@ function GameView(){
 
   return(
     <div className={styles.container}>
+      {showAlert&&<Alert message="Second player left the game!" deleteMessage={()=>setShowAlert(false)}/>}
       {!game?(
         <>
           <div>You have to join a room first</div>
-          {showAlert&&<Alert message="Second player left the game!" deleteMessage={()=>setShowAlert(false)}/>}
         </>
       ):(
         <>
           {invalidMove&&<Alert message="Invalid expression! Move cancelled." deleteMessage={()=>setInvalidMove(false)}/>}
-          {winner&&<ScoreModal result={winner.result} my={winner.my} enemy={winner.enemy} onClose={()=>setWinner(null)}/>}
+          {winner&&<ScoreModal result={winner.result} my={winner.my} enemy={winner.enemy} onClose={()=>{setWinner(null); setGame(undefined);}}/>}
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <div className={styles.enemies}>
               <RenderPlayerCards cards={enemyCards} droppableType="enemy"/>
@@ -121,7 +132,9 @@ function GameView(){
                   <RenderAvailableCards cards={availableCards}/>
                 </SortableContext>
               </div>
-              <div className={styles.rightInfo}/>
+              <div className={styles.rightInfo}> 
+                <button onClick={() => {iDeleted.current = true; socket.emit("delete-game", true);}}>Delete Game</button>
+              </div>
             </div>
             <div className={styles.mine}>
               <RenderPlayerCards cards={myCards} droppableType="my"/>

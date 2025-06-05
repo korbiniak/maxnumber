@@ -4,17 +4,31 @@ import { useNavigate } from "react-router-dom";
 import socket, { connectSocket } from "../../socket";
 import type { Room } from "shared";
 import styles from "./Rooms.module.css";
+import buttonStyle from "../../styles/button1.module.css";
 
 export default function Rooms() {
   const [roomName, setRoomName] = useState("");
   const [rooms, setRooms] = useState<Room[]>([]);
+  const [createdRoomName, setCreatedRoomName] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     connectSocket();
+    socket.emit("get-room-list");
 
     socket.on("room-list", (rooms : Room[]) => {
         setRooms(rooms);
+        setCreatedRoomName(_ => null);
+        for (let room = 0; room < rooms.length; room++){
+          if (rooms[room].player1 == socket.id) {
+            if (rooms[room].playersNum == 1) {
+              setCreatedRoomName(rooms[room].name);
+            }
+            break;
+          } 
+        }
+
+
         console.log(" pokoje : ", rooms);
     });
 
@@ -25,7 +39,6 @@ export default function Rooms() {
 
     return () => {
       socket.off("room-list");
-      socket.off("room-joined");
       socket.off("update-state");
       socket.off("error");
     };
@@ -42,6 +55,11 @@ export default function Rooms() {
   const handleJoinRoom = (roomId: string) => {
     socket.emit("join-room", roomId);
     console.log(" dolaczamy do pokoju o id ", roomId);
+  };
+
+  const handleDeleteRoom = (roomName : string | null) => {
+    if (!roomName) return;
+    socket.emit("delete-room", roomName);
   };
 
   return (
@@ -70,6 +88,11 @@ export default function Rooms() {
             {room.name}
           </button>
         ))}
+      </div>
+
+
+      <div className={styles.right}>
+        <button disabled={!createdRoomName} onClick={() => handleDeleteRoom(createdRoomName)}> Usuń Pokój </button>
       </div>
     </div>
   );

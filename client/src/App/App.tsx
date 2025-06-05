@@ -18,7 +18,7 @@ function App() {
       navigate("/");
       console.log(" zaczynamy gre w pokoju ", name);
     });
-  })
+  }, [])
 
 
   return (

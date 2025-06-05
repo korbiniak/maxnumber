@@ -18,6 +18,11 @@ interface ServerToClientEvents {
 interface ClientToServerEvents {
   "create-room": (roomId: string) => void;
   "join-room": (roomId: string) => void;
+  "delete-room": (roomId: string) => void;
+
+  "get-room-list": () => void;
+  "get-game": () => void;
+  "delete-game": (updateState ?: boolean) => void;
 
   "move-move": (data: PlayerId) => void;
   "move-card": (data: {
