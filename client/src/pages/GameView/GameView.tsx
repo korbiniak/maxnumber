@@ -133,7 +133,7 @@ function GameView(){
                 </SortableContext>
               </div>
               <div className={styles.rightInfo}> 
-                <button onClick={() => {iDeleted.current = true; socket.emit("delete-game", true);}}>Delete Game</button>
+                <button onClick={() => {iDeleted.current = true; socket.emit("delete-game", true);}}>Leave Game</button>
               </div>
             </div>
             <div className={styles.mine}>
