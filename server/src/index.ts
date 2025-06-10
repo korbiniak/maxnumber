@@ -1,103 +1,148 @@
 import express, { Request, Response } from "express";
-import { GameState, SERVER_PORT, SERVER_ORIGIN, initGameState, PlayerId, Card, NUMBER_DIGIT_CARDS_IN_GAME, ALL_DIGIT_CARDS, NUMBER_OPERATION_CARDS_IN_GAME, ALL_OPERATION_CARDS} from "shared";
 import http from "http";
-import {Server} from "socket.io";
+import { Server, Socket } from "socket.io";
+
+import {GameState, SERVER_PORT, SERVER_ORIGIN, initGameState, PlayerId, Room } from "shared";
 
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-    cors : {
-        origin : SERVER_ORIGIN
-    }
+  cors: {
+    origin: SERVER_ORIGIN
+  }
 });
 
-
-
-const players_games_id = new Map(); //Player game id
-
-const current_games = new Map(); //A dict with current games {id : game}
-let last_game_id = 0; //Last game id (to get a new one)
-
-let players_queue : PlayerId[] = []; //A queue of current waiting players (id)
-
-
-// Define the root path with a greeting message
 app.get("/", (req: Request, res: Response) => {
-    res.json({ message: "Welcome to the Express + TypeScript Server!" });
+  res.json({ message: "Socket.IO server działa!" });
 });
 
-// Start the Express server
 server.listen(SERVER_PORT, () => {
-    console.log(`The server is running at http://localhost:${SERVER_PORT}`);
-}); 
+  console.log(`Serwer działa na http://localhost:${SERVER_PORT}`);
+});
 
 
 
-//Emit actual state of game to players
-function emitGameState(game_id : number) : void{
-    const game : GameState = current_games.get(game_id); 
+const rooms = new Map<string, Room>();
+const current_games = new Map<number, GameState>();
+const players_games_id = new Map<string, number>();
+let last_game_id = 0;
 
-    io.to([game.player1Id, game.player2Id]).emit("update-state", {game_id : game_id, game : game});
+function createGame(p1: string, p2: string): number {
+  const game = initGameState(p1, p2);
+  const gameId = ++last_game_id;
+
+  current_games.set(gameId, game);
+  players_games_id.set(p1, gameId);
+  players_games_id.set(p2, gameId);
+
+  emitGameState(gameId);
+  return gameId;
 }
 
-//Create new game and add it to the queue
-function createGame(player1Id : string, player2Id : string){
-    let game : GameState = initGameState(player1Id, player2Id);
+function emitGameState(gameId: number): void {
+  const game = current_games.get(gameId);
+  if (!game) return;
 
-    const game_id = last_game_id + 1;
-    last_game_id = game_id;
-
-    current_games.set(game_id, game);
-
-    emitGameState(game_id);
-
-    players_games_id.set(player1Id, game_id);
-    players_games_id.set(player2Id, game_id);
-
+  io.to([game.player1Id, game.player2Id]).emit("update-state", { gameId, game});
 }
 
-//Delete a game if it exists
-function deleteGame(gameIdx : number | undefined){
+function deleteGame(gameId?: number): void {
+  if (!gameId) return;
+  const game = current_games.get(gameId);
+  if (!game) return;
 
-    if (gameIdx === undefined) return;
+  current_games.delete(gameId);
+  players_games_id.delete(game.player1Id);
+  players_games_id.delete(game.player2Id);
 
-    const game = current_games.get(gameIdx);
-    if (game === undefined) return;
+  io.to([game.player1Id, game.player2Id]).emit("update-state");
+}
 
-    current_games.delete(gameIdx);
+function broadcastRoomList(): void {
+  const roomList = Array.from(rooms.values()).map(room => ({
+    id: room.id,
+    players: room.players
+  }));
 
-
-    players_queue.push(game.player1Id);
-    players_queue.push(game.player2Id);
-    players_games_id.delete(game.player1Id);
-    players_games_id.delete(game.player2Id);
-
-    io.to([game.player1Id, game.player2Id]).emit("update-state", {});
+  io.emit("room-list", roomList);
 }
 
 
-io.on('connection', (socket) => {
+function removeFromRoom(socketId: string): void {
+  for (const [roomId, room] of rooms) {
+    if (room.players.includes(socketId)) {
+      room.players = room.players.filter(id => id !== socketId);
 
+      if (room.gameId) {
+        deleteGame(room.gameId);
+      }
 
-    //There is someone already in queue
-    if (players_queue.length > 0){
-        //Create the new game and get index of it
-        createGame(socket.id, players_queue.shift() as string);
+      if (room.players.length === 0) {
+        rooms.delete(roomId);
+      }
+
+      break;
     }
-    else{
-        players_queue.push(socket.id);
+  }
+}
+
+function tryJoinRoom(socket: Socket, roomId: string): void {
+  const room = rooms.get(roomId);
+
+  if (!room) {
+    socket.emit("error", "Pokój nie istnieje");
+    return;
+  }
+
+  if (room.players.length >= 2) {
+    socket.emit("error", "Pokój jest pełny");
+    return;
+  }
+
+  room.players.push(socket.id);
+  socket.join(roomId);
+  socket.emit("room-joined", roomId);
+
+  if (room.players.length === 2) {
+    const [p1, p2] = room.players;
+    const gameId = createGame(p1, p2);
+    room.gameId = gameId;
+  }
+
+  broadcastRoomList();
+}
+
+
+io.on("connection", (socket) => {
+  console.log(`Nowe połączenie: ${socket.id}`);
+
+  socket.emit("room-list", Array.from(rooms.values()));
+  console.log("Wysyłam do klienta rooms:", Array.from(rooms.values()));
+
+
+  socket.on("create-room", (roomId: string) => {
+    if (rooms.has(roomId)) {
+      socket.emit("error", "Pokój już istnieje");
+      return;
     }
 
-    socket.on('disconnect', () => {
-        let gameIdx : number | undefined = players_games_id.get(socket.id);
-        deleteGame(gameIdx);
+    const room: Room = { id: roomId, players: [socket.id] };
+    rooms.set(roomId, room);
+    socket.join(roomId);
+    socket.emit("room-joined", roomId);
+    broadcastRoomList();
+  });
 
-        //delete player from queue
-        const player_idx = players_queue.indexOf(socket.id);
-        if (player_idx != -1){
-            players_queue.splice(players_queue.indexOf(socket.id), 1);
-        }
-        console.log(current_games);
-    });
+  socket.on("join-room", (roomId: string) => {
+    tryJoinRoom(socket, roomId);
+  });
+
+  socket.on("disconnect", () => {
+    console.log(`Rozłączono: ${socket.id}`);
+    const gameId = players_games_id.get(socket.id);
+    deleteGame(gameId);
+    removeFromRoom(socket.id);
+    broadcastRoomList();
+  });
 });
