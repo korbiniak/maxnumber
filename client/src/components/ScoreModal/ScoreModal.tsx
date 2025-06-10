@@ -1,4 +1,3 @@
-import React from"react";
 import styles from"./ScoreModal.module.css";
 
 type Props={result:"win"|"lose"|"draw";my:number;enemy:number;onClose:()=>void};

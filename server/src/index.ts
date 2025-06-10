@@ -4,7 +4,6 @@ import { Server, Socket } from "socket.io";
 
 import {GameState, SERVER_PORT, SERVER_ORIGIN, initGameState, PlayerId, Room } from "shared";
 
-
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -20,8 +19,6 @@ app.get("/", (req: Request, res: Response) => {
 server.listen(SERVER_PORT, () => {
   console.log(`Serwer działa na http://localhost:${SERVER_PORT}`);
 });
-
-
 
 const rooms = new Map<string, Room>();
 const playersRoomsId = new Map<string, string>();

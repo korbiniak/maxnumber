@@ -1,10 +1,10 @@
 import type {
   GameState,
-  SERVER_PORT,
   PlayerId,
   Card,
   Room,
 } from "shared";
+import { SERVER_URL } from "shared";
 import { io, Socket } from "socket.io-client";
 
 
@@ -34,7 +34,7 @@ interface ClientToServerEvents {
 }
 
 
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io("http://localhost:3001", {
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(SERVER_URL, {
   autoConnect: false,
 });
 
