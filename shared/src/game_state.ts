@@ -1,7 +1,7 @@
 import { ALL_DIGIT_CARDS, ALL_OPERATION_CARDS, NUMBER_DIGIT_CARDS_IN_GAME, NUMBER_OPERATION_CARDS_IN_GAME } from "./constants";
 import { PlayerId, Card, GameState } from "./types";
 
-export const ets = "";
+
 
 //Create a game for two players and return an instance of game state
 export function initGameState(player_id_1 : PlayerId, player_id_2 : PlayerId) : GameState{
