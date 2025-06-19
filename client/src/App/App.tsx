@@ -8,6 +8,7 @@ import Rooms from "../pages/Rooms/Rooms";
 import About from "../pages/About/About";
 import { useEffect } from "react";
 import socket from "../socket";
+import WatchView from "../pages/WatchView/WatchView";
 
 function App() {
 
@@ -17,6 +18,11 @@ function App() {
     socket.on("room-joined", (name : string) => {
       navigate("/");
       console.log(" zaczynamy gre w pokoju ", name);
+    });
+
+    socket.on("started-watching", (name : string) => {
+      navigate("/watch");
+      console.log(" zaczynamy ogladac gre w pokoju ", name);
     });
   }, [])
 
@@ -33,6 +39,7 @@ function App() {
 
         <Routes>
           <Route path="/" element={<GameView/> } />
+          <Route path="/watch" element={<WatchView/> } />
           <Route path="/rooms" element={<Rooms/> } />
           <Route path="/about" element={<About/> } />
         </Routes>

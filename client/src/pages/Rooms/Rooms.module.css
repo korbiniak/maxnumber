@@ -23,9 +23,26 @@
 }
 
 .roomButton {
-  min-width: 500px;
-  min-height: 50px;
+  width: 500px;
+  height: 50px;
 }
+
+.roomButton:disabled {
+  width: 440px;
+}
+
+.roomDiv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.watchButton {
+  height: 50px;
+  width: 50px;
+}
+
 
 button {
   background-color: rgb(204, 197, 197) !important;
@@ -36,3 +53,4 @@ button {
 button:hover {
   background-color: rgb(177, 177, 177) !important;
 }
+

@@ -9,10 +9,11 @@ import { io, Socket } from "socket.io-client";
 
 
 interface ServerToClientEvents {
-  "update-state": (data: { game_id: number; game: GameState }) => void;
+  "update-state": (data: { game_id: string; game: GameState }) => void;
   "room-list": (rooms: Room[]) => void;
   "room-joined": (roomId: string) => void;
   "error": (message: string) => void;
+  "started-watching": (roomId: string) => void;
 }
 
 interface ClientToServerEvents {
@@ -23,10 +24,13 @@ interface ClientToServerEvents {
   "get-room-list": () => void;
   "get-game": () => void;
   "delete-game": (updateState ?: boolean) => void;
+  "start-watch": (roomId : string) => void;
+  "stop-watch": () => void;
+
 
   "move-move": (data: PlayerId) => void;
   "move-card": (data: {
-    gameId: number;
+    gameId: string;
     target: "my" | "enemy";
     card: Card;
     index: number;

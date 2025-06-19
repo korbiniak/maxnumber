@@ -70,6 +70,7 @@ export default function Rooms() {
           placeholder="Room name"
           value={roomName}
           onChange={(e) => setRoomName(e.target.value)}
+          maxLength={30}
         />
         <button onClick={handleCreateRoom}>Create Room</button>
       </div>
@@ -78,6 +79,7 @@ export default function Rooms() {
         <h2>Available rooms</h2>
         {rooms.length === 0 && <p>No available rooms</p>}
         {rooms.map((room) => (
+          <div className={styles.roomDiv}>
           <button
             key={room.name}
             className={styles.roomButton}
@@ -86,6 +88,9 @@ export default function Rooms() {
           >
             {room.name}
           </button>
+
+          {room.playersNum >= 2 && <button className={styles.watchButton} onClick={() => {socket.emit("start-watch", room.name);}}>&#128065;</button>}
+          </div>
         ))}
       </div>
 

@@ -26,14 +26,11 @@ server.listen(SERVER_PORT, () => {
 const rooms = new Map<string, Room>();
 const playersRoomsId = new Map<string, string>();
 const waiting_players = new Set<string>();
-const current_games = new Map<number, GameState>();
-const players_games_id = new Map<string, number>();
-let last_game_id = 0;
+const current_games = new Map<string, GameState>();
+const players_games_id = new Map<string, string>();
 
-function createGame(p1: string, p2: string): number {
-    const gameId = ++last_game_id;
+function createGame(p1: string, p2: string, gameId : string) {
     const game = initGameState(p1, p2, gameId);
-  
 
     current_games.set(gameId, game);
     players_games_id.set(p1, gameId);
@@ -42,10 +39,10 @@ function createGame(p1: string, p2: string): number {
     setTimeout(() => {
         emitGameState(gameId);
     }, 100);
-    return gameId;
+
 }
 
-function emitGameState(gameId: number): void {
+function emitGameState(gameId: string): void {
   const game = current_games.get(gameId);
   if (!game) return;
 
@@ -54,7 +51,7 @@ function emitGameState(gameId: number): void {
   console.log(" wysylamy gre graczom ", game);
 }
 
-function deleteGame(gameId?: number, updateState : boolean = false): void {
+function deleteGame(gameId?: string, updateState : boolean = false): void {
   if (!gameId) return;
   const game = current_games.get(gameId);
   if (!game) return;
@@ -105,10 +102,9 @@ function tryJoinRoom(socket: Socket, roomId: string): void {
     room.player2 = socket.id;
     room.playersNum = 2;
     console.log(" tworzymy gre w pokoju o nazwie ", roomId);
-    const gameId = createGame(room.player1, room.player2);
-    room.gameId = gameId;
+    
+    createGame(room.player1, room.player2, roomId);
 }
-
 
 function deleteRoom(roomId : string | null | undefined){
   if (!roomId) return;
@@ -117,6 +113,40 @@ function deleteRoom(roomId : string | null | undefined){
   rooms.delete(roomId);
   waiting_players.delete(room.player1);
   broadcastRoomList();
+}
+
+function tryWatchRoom(socket: Socket, roomId: string): void {
+  const game = current_games.get(roomId);
+
+  if (!game) {
+    socket.emit("error", "Gra nie istnieje!");
+    return;
+  }
+
+  if (players_games_id.has(socket.id)) {
+    socket.emit("error", "Jesteś aktualnie w grze!");
+    return;
+  }
+
+  if (waiting_players.has(socket.id)) {
+    socket.emit("error", "Usuń swój pokój!");
+    return;
+  }
+
+  players_games_id.set(socket.id, roomId);
+  io.to(socket.id).emit("started-watching", roomId)
+}
+
+
+function stopWatch(socket : Socket) {
+  const game_id = players_games_id.get(socket.id);
+  if (!game_id) return;
+  const game = current_games.get(game_id);
+  if (!game) return;
+
+  if (game.player1Id === socket.id || game.player2Id === socket.id) return;
+
+  players_games_id.delete(socket.id);
 }
 
 io.on("connection", (socket) => {
@@ -168,7 +198,13 @@ io.on("connection", (socket) => {
     console.log("Gracz ", socket.id, " chce dostac gre!");
     const game_id = players_games_id.get(socket.id);
     if (!game_id) return;
-    emitGameState(game_id);
+    const game = current_games.get(game_id);
+    if (!game) return;
+    if (game.player1Id === socket.id || game.player2Id === socket.id) emitGameState(game_id);
+    else {
+      socket.emit("started-watching", game_id);
+      socket.emit("update-state",  { game_id: game.id, game : game });
+    }
   }) 
 
   socket.on("delete-game", (updateState : boolean = false) => {
@@ -183,7 +219,7 @@ io.on("connection", (socket) => {
     const waiting_room_id = playersRoomsId.get(socket.id);
     deleteRoom(waiting_room_id);
 
-if (updateState) io.to([game.player1Id, game.player2Id]).emit("update-state", {});
+  if (updateState) io.to([game.player1Id, game.player2Id]).emit("update-state", {});
   });
 
 
@@ -219,6 +255,15 @@ if (updateState) io.to([game.player1Id, game.player2Id]).emit("update-state", {}
         emitGameState(game.id);
         console.log(" robimy update : ", game);
     });
+
+  socket.on("start-watch", (roomId : string) => {
+      console.log(socket.id, "chce zaczac ogladac gre", roomId);
+      tryWatchRoom(socket, roomId);
+  });
+
+  socket.on("stop-watch", () => {
+    stopWatch(socket);
+  });
 
 
   socket.on("disconnect", () => {

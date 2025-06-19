@@ -16,8 +16,8 @@ import{SortableContext}from"@dnd-kit/sortable";
 
 function GameView(){
   const[game,setGame]=useState<GameState>();
-  const[gameId,setGameId]=useState<number>();
-  const gameIdRef=useRef<number|undefined>(undefined);
+  const[gameId,setGameId]=useState<string>();
+  const gameIdRef=useRef<string|undefined>(undefined);
 
   const[showAlert,setShowAlert] = useState(false);
   const iDeleted = useRef<boolean>(false);
@@ -40,7 +40,7 @@ function GameView(){
   useEffect(()=>{
     socket.emit("get-game");
 
-    const h=(d:{game_id?:number;game:GameState})=>{
+    const h=(d:{game_id?:string;game:GameState})=>{
       if (!d) return;
 
       const{game_id,game}=d;

@@ -1,0 +1,71 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  align-items: center;
+}
+
+
+.player2 {
+  flex: 2;
+  display: flex;
+  width: 100%;
+  max-width: 2000px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Środek – dostępne karty po lewej */
+.middle {
+  flex: 2;
+  width: 100%;
+  max-width: 2000px;
+  display: flex;
+  flex-direction: row;
+
+  padding: 50px 0px 50px 0px;
+}
+
+.leftInfo{
+  flex: 2;
+  text-align: center;
+  font-weight: bolder;
+  font-size: larger;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* Dostępne karty – po lewej */
+.available {
+  flex: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rightInfo{
+  flex: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+
+.player1 {
+  width: 100%;
+  flex: 2;
+  max-width: 2000px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+
+.cards {
+  flex: 8;
+}
