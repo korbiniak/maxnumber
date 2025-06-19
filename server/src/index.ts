@@ -54,7 +54,7 @@ function emitGameState(gameId: number): void {
   console.log(" wysylamy gre graczom ", game);
 }
 
-function deleteGame(gameId?: number): void {
+function deleteGame(gameId?: number, updateState : boolean = false): void {
   if (!gameId) return;
   const game = current_games.get(gameId);
   if (!game) return;
@@ -63,7 +63,7 @@ function deleteGame(gameId?: number): void {
   players_games_id.delete(game.player1Id);
   players_games_id.delete(game.player2Id);
 
-  io.to([game.player1Id, game.player2Id]).emit("update-state", {});
+  if (updateState) io.to([game.player1Id, game.player2Id]).emit("update-state", {});
 }
 
 function broadcastRoomList(): void {
@@ -172,6 +172,7 @@ io.on("connection", (socket) => {
   }) 
 
   socket.on("delete-game", (updateState : boolean = false) => {
+    
     console.log(socket.id, "usuwa gre!", players_games_id, current_games);
     const game_id = players_games_id.get(socket.id);
     if (!game_id) return;
@@ -181,7 +182,8 @@ io.on("connection", (socket) => {
     deleteGame(game_id);
     const waiting_room_id = playersRoomsId.get(socket.id);
     deleteRoom(waiting_room_id);
-    if (updateState) io.to([game.player1Id, game.player2Id]).emit("update-state", {});
+
+if (updateState) io.to([game.player1Id, game.player2Id]).emit("update-state", {});
   });
 
 
@@ -222,7 +224,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log(`Rozłączono: ${socket.id}`);
     const gameId = players_games_id.get(socket.id);
-    deleteGame(gameId);
+    deleteGame(gameId, true);
     const waiting_room_id = playersRoomsId.get(socket.id);
     deleteRoom(waiting_room_id);
     broadcastRoomList();
