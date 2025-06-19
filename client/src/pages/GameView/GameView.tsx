@@ -2,6 +2,7 @@
 import {useEffect,useRef,useState} from"react";
 import styles from"./GameView.module.css";
 import cardStyles from"../../styles/card.module.css";
+import buttonStyle from "../../styles/button1.module.css";
 import socket from"../../socket";
 import type{Card,GameState,Expression} from"shared";
 import{isExpressionValid,evaluateExpression}from"shared";
@@ -11,6 +12,7 @@ import Alert from"../../components/Alert/Alert";
 import ScoreModal from"../../components/ScoreModal/ScoreModal";
 import{DndContext,PointerSensor,closestCenter,useSensor,useSensors,type DragStartEvent,type DragEndEvent,DragOverlay}from"@dnd-kit/core";
 import{SortableContext}from"@dnd-kit/sortable";
+
 
 function GameView(){
   const[game,setGame]=useState<GameState>();
@@ -111,7 +113,7 @@ function GameView(){
   }
 
   return(
-    <div className={styles.container}>
+    <div className={`${styles.container} ${buttonStyle}`}>
       {showAlert&&<Alert message="Second player left the game!" deleteMessage={()=>setShowAlert(false)}/>}
       {!game?(
         <>
@@ -123,7 +125,9 @@ function GameView(){
           {winner&&<ScoreModal result={winner.result} my={winner.my} enemy={winner.enemy} onClose={()=>{setWinner(null); setGame(undefined);}}/>}
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <div className={styles.enemies}>
-              <RenderPlayerCards cards={enemyCards} droppableType="enemy"/>
+              <div className={styles.leftInfo}>Enemy Cards</div>
+              <div className={styles.cards}><RenderPlayerCards cards={enemyCards} droppableType="enemy"/></div>
+              <div className={styles.rightInfo}>Enemy Score: {evaluateExpression(enemyCards)}</div>
             </div>
             <div className={styles.middle}>
               <div className={styles.leftInfo}>{isMyTurn?"Your turn":"Opponent's turn"}</div>
@@ -137,7 +141,9 @@ function GameView(){
               </div>
             </div>
             <div className={styles.mine}>
-              <RenderPlayerCards cards={myCards} droppableType="my"/>
+              <div className={styles.leftInfo}>Your Cards</div>
+              <div className={styles.cards}><RenderPlayerCards cards={myCards} droppableType="my"/></div>
+              <div className={styles.rightInfo}>Your Score: {evaluateExpression(myCards)}</div>
             </div>
             <DragOverlay dropAnimation={null}>
               {draggedCard&&<div className={cardStyles.card}>{draggedCard}</div>}

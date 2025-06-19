@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import socket, { connectSocket } from "../../socket";
 import type { Room } from "shared";
 import styles from "./Rooms.module.css";
+import buttonStyle from "../../styles/button1.module.css";
 
 export default function Rooms() {
   const [roomName, setRoomName] = useState("");
@@ -38,7 +39,6 @@ export default function Rooms() {
 
     return () => {
       socket.off("room-list");
-      socket.off("update-state");
       socket.off("error");
     };
   }, [navigate]);
@@ -62,7 +62,7 @@ export default function Rooms() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${buttonStyle}`}>
       <div className={styles.left}>
         <h2>Create Room</h2>
         <input

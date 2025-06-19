@@ -43,38 +43,49 @@ export function isExtensionOfExpression(expr1 : Expression, expr2 : Expression) 
 
 }
 
-function apply(a: number, op: string, b: number): number {
+function apply(a: number, op: Operation, b: number): number {
   switch (op) {
     case "+": return a + b;
     case "-": return a - b;
     case "*": return a * b;
-    case "/": return a / b;     
-    default:  throw new Error("Unknown operation");
+    case "/": return a / b;
   }
 }
 
 export function evaluateExpression(expr: Expression): number {
   if (expr.length === 0) return 0;
 
-  let curNum: number | null = null;
-  let result: number | null = null;
-  let pendingOp: string | null = null;
+  let curNum: number | null    = null;
+  let result: number | null    = null;
+  let pendingOp: Operation | null = null;
 
   const flush = () => {
     if (curNum === null) return;
-    if (result === null) result = curNum;
-    else if (pendingOp)   result = apply(result, pendingOp, curNum);
+
+    if (result === null) {
+      // Jeśli mamy już pendingOp, traktujemy to jak 0 <op> curNum
+      if (pendingOp !== null) {
+        result = apply(0, pendingOp, curNum);
+      } else {
+        result = curNum;
+      }
+    } else if (pendingOp !== null) {
+      result = apply(result, pendingOp, curNum);
+    }
+
     curNum = null;
   };
 
   for (const token of expr) {
     if (typeof token === "number") {
       curNum = (curNum ?? 0) * 10 + token;
-    } else { 
+    } else {
+      // spotkaliśmy operator
       flush();
       pendingOp = token;
     }
   }
+
   flush();
   return result ?? 0;
 }

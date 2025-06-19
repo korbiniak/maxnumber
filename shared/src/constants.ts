@@ -13,5 +13,5 @@ export const SERVER_URL = isDevelopment
   : "https://maxnumber.framal.xyz";
 export const ALL_DIGIT_CARDS : Digit[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 export const ALL_OPERATION_CARDS : Operation[] = ["*", "+", "-", "/"];
-export const NUMBER_DIGIT_CARDS_IN_GAME = 8;
-export const NUMBER_OPERATION_CARDS_IN_GAME = 6;
+export const NUMBER_DIGIT_CARDS_IN_GAME = 2;
+export const NUMBER_OPERATION_CARDS_IN_GAME = 2;
