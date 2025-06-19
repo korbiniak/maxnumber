@@ -1,5 +1,4 @@
-import { ALL_OPERATION_CARDS } from './constants';
-import { Expression, Operation, Card} from './types'
+import type { Expression, Operation, Card} from './types'
 
 
 function isOperation(card: Card): card is Operation {

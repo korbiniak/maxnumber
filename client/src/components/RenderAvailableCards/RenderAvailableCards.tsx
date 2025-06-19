@@ -1,4 +1,3 @@
-import React from "react";
 import RenderPlayerCards from "../RenderPlayerCards/RenderPlayerCards";
 import type { Card } from "shared";
 

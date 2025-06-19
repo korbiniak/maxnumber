@@ -1,5 +1,5 @@
 import { ALL_DIGIT_CARDS, ALL_OPERATION_CARDS, NUMBER_DIGIT_CARDS_IN_GAME, NUMBER_OPERATION_CARDS_IN_GAME } from "./constants";
-import { PlayerId, Card, GameState } from "./types";
+import type { PlayerId, Card, GameState } from "./types";
 
 
 

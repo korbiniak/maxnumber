@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import socket, { connectSocket } from "../../socket";
 import type { Room } from "shared";
 import styles from "./Rooms.module.css";
-import buttonStyle from "../../styles/button1.module.css";
 
 export default function Rooms() {
   const [roomName, setRoomName] = useState("");
