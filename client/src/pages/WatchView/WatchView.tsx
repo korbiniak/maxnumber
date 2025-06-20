@@ -8,6 +8,7 @@ import RenderPlayerCards from"../../components/RenderPlayerCards/RenderPlayerCar
 import RenderAvailableCards from"../../components/RenderAvailableCards/RenderAvailableCards";
 import Alert from"../../components/Alert/Alert";
 import ScoreModal2 from "../../components/ScoreModal2/ScoreModal2";
+import { useNavigate } from "react-router-dom";
 
 
 function WatchView(){
@@ -25,6 +26,8 @@ function WatchView(){
   const[turn,setTurn]=useState(1);
   const[player1Id,setPlayer1Id]=useState("");
   const[player2Id,setPlayer2Id]=useState("");
+
+  const navigate = useNavigate();
 
 
   useEffect(()=>{gameIdRef.current=gameId;},[gameId]);
@@ -47,7 +50,6 @@ function WatchView(){
         setShowAlert(true);
         setTimeout(()=>setShowAlert(false),4000);
       }
-      setTimeout(()=>socket.emit("get-game"),2000);
 
 
     };
@@ -73,10 +75,10 @@ function WatchView(){
 
   useEffect(()=>{
     if(game && availableCards.length===0){
-      const player1Score=evaluateExpression(cards1 as Expression);
-      const player2Score=evaluateExpression(cards2 as Expression);
-      const res=player1Score>player2Score?"win":player1Score<player2Score?"lose":"draw";
-      setWinner({result:res,player1:player1Score,player2:player2Score});
+      const player1Score = evaluateExpression(cards1 as Expression);
+      const player2Score = evaluateExpression(cards2 as Expression);
+      const res = player1Score > player2Score ? "win" : player1Score < player2Score ? "lose" : "draw";
+      setWinner({result:res, player1:player1Score, player2:player2Score});
       socket.emit("delete-game");
     }
   },[availableCards,cards1,cards2]);
@@ -106,7 +108,7 @@ function WatchView(){
                   <RenderAvailableCards cards={availableCards}/>
               </div>
               <div className={styles.rightInfo}> 
-                <button onClick={() => {}}>Leave Game</button>
+                <button onClick={() => {socket.emit("stop-watch"); navigate("/rooms")}}>Leave Game</button>
               </div>
             </div>
             <div className={styles.player1}>

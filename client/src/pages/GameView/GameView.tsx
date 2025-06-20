@@ -43,10 +43,12 @@ function GameView(){
     const h=(d:{game_id?:string;game:GameState})=>{
       if (!d) return;
 
+
       const{game_id,game}=d;
+      console.log("dostalem aktualizacje stanu gry: ", game, game_id);
       setGame(game);
       setGameId(game_id);
-      console.log("I deleted", iDeleted);
+
       if(gameIdRef.current && game_id===undefined && !iDeleted.current){
         setShowAlert(true);
         setTimeout(()=>setShowAlert(false),4000);
