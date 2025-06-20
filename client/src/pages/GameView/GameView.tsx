@@ -12,6 +12,7 @@ import Alert from"../../components/Alert/Alert";
 import ScoreModal from"../../components/ScoreModal/ScoreModal";
 import{DndContext,PointerSensor,closestCenter,useSensor,useSensors,type DragStartEvent,type DragEndEvent,DragOverlay}from"@dnd-kit/core";
 import{SortableContext}from"@dnd-kit/sortable";
+import { Link } from "react-router-dom";
 
 
 function GameView(){
@@ -119,7 +120,7 @@ function GameView(){
       {showAlert&&<Alert message="Second player left the game!" deleteMessage={()=>setShowAlert(false)}/>}
       {!game?(
         <>
-          <div>You have to join a room first</div>
+          <Link to="/rooms">You have to join a room first</Link>
         </>
       ):(
         <>
