@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import http from "http";
 import { Server, Socket } from "socket.io";
 
-import {GameState, SERVER_PORT, SERVER_ORIGIN, initGameState, PlayerId, Room, Card } from "shared";
+import {GameState, SERVER_PORT, SERVER_ORIGIN, initGameState, Room, Card } from "shared";
 
 
 const app = express();
@@ -119,6 +119,12 @@ function tryJoinRoom(socket: Socket, roomId: string): void {
 }
 
 function createRoom(socket : Socket, roomId : string): void {
+
+  if (roomId.length > 30) {
+    socket.emit("error", "Długość nazwy pokoju może wynosić maksymalnie 30!");
+    return;
+  }
+
   if (rooms.has(roomId)) {
     socket.emit("error", "Pokój już istnieje!");
     return;
