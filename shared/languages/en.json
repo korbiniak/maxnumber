@@ -1,0 +1,58 @@
+{
+    "header" : {
+        "home" : "Home",
+        "aboutUs" : "About us",
+        "rooms" : "Rooms"
+    },
+
+    "home" : {
+        "joinRoomFirst" : "You have to join a room first",
+        "enemyCards" : "Enemy Cards",
+        "enemyTurn" : "Opponent's turn",
+        "yourTurn" : "Your Turn",
+        "yourCards" : "Your Cards",
+        "leaveGame" : "Leave Game",
+        "yourScore" : "Your Score",
+        "enemyScore" : "Enemy Score",
+        "errPlayerLeft" : "Second player left the game!",
+        "errInvMove" : "Invalid expression! Move cancelled"
+    },
+
+    "watch" : {
+        "joinRoomFirst" : "To watch you have to join a room first"
+    },
+
+    "about" : {
+        "titles" : {
+            "game" : "About Game",
+            "framal" : "About Framal",
+            "mpdoge" : "About Mpdoge",
+            "tapik" : "About Tapik"
+        },
+        "content" : {
+            "game" : "MaxNumber is a fast-paced and strategic math card game where numbers and operators collide in a battle of wits.\nEach player starts with a single card showing the number 1.\nIn alternating turns, players draw from a shared pool of cards—containing numbers or mathematical operations—and insert them into any position in their own or their opponent’s number sequence.\nOnce all the cards are used, the sequences are evaluated.\nThe player whose final expression results in the highest number wins.\nWhat makes MaxNumber special is the freedom to manipulate not only your own number but also disrupt your opponent’s strategy.\nEvery card placement counts, and even a small change can flip the entire game.\nWhether you're a fan of puzzles, strategy games, or just love numbers, MaxNumber offers a unique challenge that's easy to learn but hard to master.\nSharpen your mind, outthink your opponent, and become the master of numbers!",
+            "framal" : "My name is Franciszek Malinka, I’m a young programmer interested in Linux kernel, OCaml, bouldering, investing, music, my wife and coffee. I got BSc degree in Computer Science and Mathematics at the University of Wrocław (see my thesis). Currently I’m pursuing Masters in Computer Science. My main interests are fair division (field of algorithmic game theory), operating systems, Linux kernel, embedded programming.",
+            "mpdoge" : "My name is Miłosz Popowicz. I'm programmer with math skills. In my free time I like playing Fortnite :D XD",
+            "tapik" : "My name is Szymon Krzywda. I'm a competitive programmer with success in the Polish Olympiad in Informatics. In my free time, I enjoy web development and doing some math as well. I also volunteered at the Olympiad Computer Science Club (Olimpijskie Koło Informatyczne), where I helped young students prepare for the Olympiad."
+        }
+    },
+
+    "rooms" : {
+        "createRoom" : "Create Room",
+        "deleteRoom" : "Delete Room",
+        "roomName" : "Room Name",
+        "availableRooms" : "Available Rooms",
+        "noAvailableRooms" : "No available rooms"
+    },
+
+    "err" : {
+        "roomNameLength" : "Room name length can be maximum 30!",
+        "roomFull" : "The room is full!",
+        "deleteRoom" : "Delete your room!",
+        "roomExist" : "The room already exist!",
+        "roomNotExist" : "The room doesn't exist!",
+        "gameNotExist" : "The game doesn't exist!",
+        "inGame" : "You are currently in the game!"
+    }
+    
+}

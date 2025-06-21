@@ -5,12 +5,16 @@ import socket, { connectSocket } from "../../socket";
 import type { Room } from "shared";
 import styles from "./Rooms.module.css";
 import buttonStyle from "../../styles/button1.module.css";
+import { useTranslation } from "react-i18next";
+
 
 export default function Rooms() {
   const [roomName, setRoomName] = useState("");
   const [rooms, setRooms] = useState<Room[]>([]);
   const [createdRoomName, setCreatedRoomName] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
 
   useEffect(() => {
     connectSocket();
@@ -64,20 +68,20 @@ export default function Rooms() {
   return (
     <div className={`${styles.container} ${buttonStyle}`}>
       <div className={styles.left}>
-        <h2>Create Room</h2>
+        <h2>{t('rooms.createRoom')}</h2>
         <input
           type="text"
-          placeholder="Room name"
+          placeholder={t('rooms.roomName')}
           value={roomName}
           onChange={(e) => setRoomName(e.target.value)}
           maxLength={30}
         />
-        <button onClick={handleCreateRoom}>Create Room</button>
+        <button onClick={handleCreateRoom}>{t('rooms.createRoom')}</button>
       </div>
 
       <div className={styles.middle}>
-        <h2>Available rooms</h2>
-        {rooms.length === 0 && <p>No available rooms</p>}
+        <h2>{t('rooms.availableRooms')}</h2>
+        {rooms.length === 0 && <p>{t('rooms.noAvailableRooms')}</p>}
         {rooms.map((room) => (
           <div className={styles.roomDiv}>
           <button
@@ -96,7 +100,7 @@ export default function Rooms() {
 
 
       <div className={styles.right}>
-        <button disabled={!createdRoomName} onClick={() => handleDeleteRoom(createdRoomName)}> Usuń Pokój </button>
+        <button disabled={!createdRoomName} onClick={() => handleDeleteRoom(createdRoomName)}> {t('rooms.deleteRoom')} </button>
       </div>
     </div>
   );

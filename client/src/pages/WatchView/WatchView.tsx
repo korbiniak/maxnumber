@@ -8,7 +8,9 @@ import RenderPlayerCards from"../../components/RenderPlayerCards/RenderPlayerCar
 import RenderAvailableCards from"../../components/RenderAvailableCards/RenderAvailableCards";
 import Alert from"../../components/Alert/Alert";
 import ScoreModal2 from "../../components/ScoreModal2/ScoreModal2";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 
 
 function WatchView(){
@@ -28,7 +30,7 @@ function WatchView(){
   const[player2Id,setPlayer2Id]=useState("");
 
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
 
   useEffect(()=>{gameIdRef.current=gameId;},[gameId]);
 
@@ -90,7 +92,7 @@ function WatchView(){
       {showAlert&&<Alert message="Some player left the game!" deleteMessage={()=>setShowAlert(false)}/>}
       {!game?(
         <>
-          <div>To watch you have to join a room first</div>
+          <Link to="/rooms">{t('watch.joinRoomFirst')}</Link>
         </>
       ):(
         <>

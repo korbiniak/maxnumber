@@ -10,11 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "i18next": "^25.2.1",
+    "i18next-browser-languagedetector": "^8.2.0",
+    "i18next-fs-backend": "^2.6.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-i18next": "^15.5.3",
+    "shared": "*",
     "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1",
-    "shared": "*"
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

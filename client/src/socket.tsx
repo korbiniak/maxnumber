@@ -27,6 +27,7 @@ interface ClientToServerEvents {
   "start-watch": (roomId : string) => void;
   "stop-watch": () => void;
 
+  "set-lang": (lang: string) => void;
 
   "move-move": (data: PlayerId) => void;
   "move-card": (data: {

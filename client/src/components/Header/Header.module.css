@@ -7,14 +7,78 @@
 }
 
 .left{
-  position: absolute;
-  left: 40px;
+  flex: 1;
+  padding-left: 40px;
 
   font-size: 30px;
 }
 
+.right {
+  padding-right: 40px;
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+
+.lang {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center ;
+  border: none;
+}
+
+.lang:hover{
+  .langOptions {
+    display: grid;
+  }
+}
+
+.langOptions {
+
+  position: absolute;
+  width: 45px;
+  height: auto;
+  background-color: gray;
+  display: none;
+  align-items: center;
+  grid-template-columns: 1fr;
+
+ left: 41px;
+ top: 0px;
+
+ border-radius: 6px;
+
+}
+
+
+.langOptions > div {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.langOptions > div:first-child {
+  border-radius: 6px 6px 0px 0px;
+}
+
+.langOptions > div:last-child {
+  border-radius: 0px 0px 6px 6px;
+}
+
+.langOptions > div:hover {
+  background-color: var(--card);
+}
+
+
 .main {
   display: flex;
+  flex: 3;
   gap: 16px; /* odstęp między tabami */
   padding: 12px 24px;
   align-items: center;

@@ -1,8 +1,9 @@
 import express, { Request, Response } from "express";
 import http from "http";
 import { Server, Socket } from "socket.io";
+import i18n from "./i18n";
 
-import {GameState, SERVER_PORT, SERVER_ORIGIN, initGameState, Room, Card } from "shared";
+import {GameState, SERVER_PORT, SERVER_ORIGIN, initGameState, Room, Card, evaluateExpression } from "shared";
 
 
 const app = express();
@@ -29,6 +30,7 @@ const waiting_players = new Set<string>();
 const current_games = new Map<string, GameState>();
 const players_games_id = new Map<string, string>();
 const game_watchers = new Map<string, string[]>();
+
 
 function createGame(p1: string, p2: string, gameId : string) {
     const game = initGameState(p1, p2, gameId);
@@ -87,24 +89,25 @@ function broadcastRoomList(): void {
 
 function tryJoinRoom(socket: Socket, roomId: string): void {
     const room = rooms.get(roomId);
+    const t = i18n.getFixedT(socket.data.lang);
 
     if (!room) {
-        socket.emit("error", "Pokój nie istnieje!");
+        socket.emit("error", t("err.roomNotExist"));
         return;
     }
 
     if (players_games_id.has(socket.id)) {
-      socket.emit("error", "Jesteś aktualnie w grze!");
+      socket.emit("error", t("err.inGame"));
       return;
     }
 
     if (waiting_players.has(socket.id)) {
-      socket.emit("error", "Usuń swój pokój!");
+      socket.emit("error", t("err.deleteRoom"));
       return;
     }
 
     if (room.playersNum === 2) {
-        socket.emit("error", "Pokój jest pełny");
+        socket.emit("error", t("err.roomFull"));
         return;
     }
 
@@ -119,24 +122,25 @@ function tryJoinRoom(socket: Socket, roomId: string): void {
 }
 
 function createRoom(socket : Socket, roomId : string): void {
+  const t = i18n.getFixedT(socket.data.lang);
 
   if (roomId.length > 30) {
-    socket.emit("error", "Długość nazwy pokoju może wynosić maksymalnie 30!");
+    socket.emit("error", t("err.roomNameLength"));
     return;
   }
 
   if (rooms.has(roomId)) {
-    socket.emit("error", "Pokój już istnieje!");
+    socket.emit("error", t("err.roomExist"));
     return;
   }
 
   if (players_games_id.has(socket.id)) {
-    socket.emit("error", "Jesteś aktualnie w grze!");
+    socket.emit("error", t("err.inGame"));
     return;
   }
 
   if (waiting_players.has(socket.id)) {
-    socket.emit("error", "Usuń stary pokój!");
+    socket.emit("error", t("err.deleteRoom"));
     return;
   }
 
@@ -159,19 +163,20 @@ function deleteRoom(roomId : string | null | undefined): void{
 
 function tryWatchRoom(socket: Socket, roomId: string): void {
   const game = current_games.get(roomId);
+  const t = i18n.getFixedT(socket.data.lang);
 
   if (!game) {
-    socket.emit("error", "Gra nie istnieje!");
+    socket.emit("error", t("err.gameNotExist"));
     return;
   }
 
   if (players_games_id.has(socket.id)) {
-    socket.emit("error", "Jesteś aktualnie w grze!");
+    socket.emit("error", t("err.inGame"));
     return;
   }
 
   if (waiting_players.has(socket.id)) {
-    socket.emit("error", "Usuń swój pokój!");
+    socket.emit("error", t("err.deleteRoom"));
     return;
   }
 
@@ -257,11 +262,18 @@ function moveCard(socket: Socket, data : {
 
 io.on("connection", (socket) => {
 
+
   console.log(`Nowe połączenie: ${socket.id}`);
 
   socket.emit("room-list", Array.from(rooms.values()));
   console.log("Wysyłam do klienta rooms:", Array.from(rooms.values()));
 
+  //Default Language
+  socket.data.lang = "pl";
+
+  socket.on("set-lang", (lang : string) => {
+    socket.data.lang = lang;
+  }); 
 
   socket.on("create-room", (roomId: string) => {
     createRoom(socket, roomId);
@@ -312,7 +324,6 @@ io.on("connection", (socket) => {
   socket.on("stop-watch", () => {
     stopWatch(socket);
   });
-
 
   socket.on("disconnect", () => {
     console.log(`Rozłączono: ${socket.id}`);

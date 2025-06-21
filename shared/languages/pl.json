@@ -1,0 +1,50 @@
+{
+    "header" : {
+        "home" : "Strona Główna",
+        "aboutUs" : "O nas",
+        "rooms" : "Pokoje"
+    },
+
+    "home" : {
+        "joinRoomFirst" : "Musisz pierwsze dołączyć do pokoju"
+    },
+
+    "watch" : {
+        "joinRoomFirst" : "By zacząć oglądać gre, dołącz do pokoju"
+    },
+
+    "about" : {
+        "titles" : {
+            "game" : "O grze",
+            "framal" : "O Framal",
+            "mpdoge" : "O Mpdoge",
+            "tapik" : "O Tapik"
+        },
+        "content" : {
+            "game" : "MaxNumber to dynamiczna i strategiczna gra karciana, w której liczby i operatory zderzają się w bitwie na spryt.\nKażdy gracz zaczyna z pojedynczą kartą pokazującą liczbę 1.\nW naprzemiennych turach gracze biorą kartę ze wspólnej puli kart — zawierających liczby lub działania matematyczne — i wkładają ją w dowolne miejsce w swoim ciągu liczb lub ciągu liczb przeciwnika.\nPo wykorzystaniu wszystkich kart ciągi są oceniane.\nGracz, którego ostateczne wyrażenie daje najwyższą liczbę, wygrywa.\nTo, co czyni MaxNumber wyjątkowym, to swoboda manipulowania nie tylko własną liczbą, ale także zakłócania strategii przeciwnika.\nKażde ułożenie karty się liczy, a nawet niewielka zmiana może odwrócić całą grę.\nNiezależnie od tego, czy jesteś fanem łamigłówek, gier strategicznych, czy po prostu kochasz liczby, MaxNumber oferuje wyjątkowe wyzwanie, którego łatwo się nauczyć, ale trudno opanować.\nWyostrz swój umysł, przechytrz przeciwnika i zostań mistrzem liczb!",
+            "framal" : "Nazywam się Franciszek Malinka, jestem młodym programistą zainteresowanym kernelem Linuxa, OCaml, boulderingiem, inwestowaniem, muzyką, moją żoną i kawą. Uzyskałem tytuł licencjata z informatyki i matematyki na Uniwersytecie Wrocławskim (zobacz moją pracę magisterską). Obecnie realizuję studia magisterskie z informatyki. Moje główne zainteresowania to fair division (dziedzina algorytmicznej teorii gier), systemy operacyjne, kernel Linuxa, programowanie wbudowane.",
+            "mpdoge" : "Mam na imię Miłosz Popowicz. Jestem programistą z umiejętnościami matematycznymi. W wolnym czasie lubię grać w Fortnite :D XD",
+            "tapik" : "Nazywam się Szymon Krzywda. Jestem programistą konkursowym z sukcesem na Polskiej Olimpiadzie Informatycznej. W moim wolnym czasie, lubię tworzyć strony internetowe i zajmować się matematyką. Byłem także wolontariuszem w Olimpijskim Kole Informatycznym, gdzie pomagałem młodym uczniom w przygotowaniach do olimpiady."
+        }
+    },
+
+    "rooms" : {
+        "createRoom" : "Stwórz Pokój",
+        "deleteRoom" : "Usuń Pokój",
+        "roomName" : "Nazwa Pokoju",
+        "availableRooms" : "Dostępne pokoje",
+        "noAvailableRooms" : "Brak dostępnych pokoi"
+    },
+
+    "err" : {
+        "roomNameLength" : "Długość nazwy pokoju może wynosić maksymalnie 30!",
+        "roomFull" : "Pokój jest pełny!",
+        "deleteRoom" : "Usuń swój pokój!",
+        "roomExist" : "Pokój już istnieje!",
+        "roomNotExist" : "Pokój nie istnieje!",
+        "gameNotExist" : "Gra nie istnieje!",
+        "inGame" : "Jesteś aktualnie w grze!"
+    }
+   
+
+}

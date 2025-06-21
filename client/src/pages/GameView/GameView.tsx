@@ -13,6 +13,7 @@ import ScoreModal from"../../components/ScoreModal/ScoreModal";
 import{DndContext,PointerSensor,closestCenter,useSensor,useSensors,type DragStartEvent,type DragEndEvent,DragOverlay}from"@dnd-kit/core";
 import{SortableContext}from"@dnd-kit/sortable";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 
 function GameView(){
@@ -35,6 +36,7 @@ function GameView(){
   const[player2Id,setPlayer2Id]=useState("");
 
   const sensors=useSensors(useSensor(PointerSensor));
+  const { t } = useTranslation();
 
   useEffect(()=>{gameIdRef.current=gameId;},[gameId]);
 
@@ -117,20 +119,20 @@ function GameView(){
 
   return(
     <div className={`${styles.container} ${buttonStyle}`}>
-      {showAlert&&<Alert message="Second player left the game!" deleteMessage={()=>setShowAlert(false)}/>}
+      {showAlert&&<Alert message={t("home.errPlayerLeft")} deleteMessage={()=>setShowAlert(false)}/>}
       {!game?(
         <>
-          <Link to="/rooms">You have to join a room first</Link>
+          <Link to="/rooms">{t('home.joinRoomFirst')}</Link>
         </>
       ):(
         <>
-          {invalidMove&&<Alert message="Invalid expression! Move cancelled." deleteMessage={()=>setInvalidMove(false)}/>}
+          {invalidMove&&<Alert message={t("home.errInvMove")} deleteMessage={()=>setInvalidMove(false)}/>}
           {winner&&<ScoreModal result={winner.result} my={winner.my} enemy={winner.enemy} onClose={()=>{setWinner(null); setGame(undefined);}}/>}
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <div className={styles.enemies}>
-              <div className={styles.leftInfo}>Enemy Cards</div>
+              <div className={styles.leftInfo}>{t("home.enemyCards")}</div>
               <div className={styles.cards}><RenderPlayerCards cards={enemyCards} droppableType="enemy"/></div>
-              <div className={styles.rightInfo}>Enemy Score: {evaluateExpression(enemyCards)}</div>
+              <div className={styles.rightInfo}>{t("home.enemyScore")}: {evaluateExpression(enemyCards)}</div>
             </div>
             <div className={styles.middle}>
               <div className={styles.leftInfo}>{isMyTurn?"Your turn":"Opponent's turn"}</div>
@@ -140,13 +142,13 @@ function GameView(){
                 </SortableContext>
               </div>
               <div className={styles.rightInfo}> 
-                <button onClick={() => {iDeleted.current = true; socket.emit("delete-game", true);}}>Leave Game</button>
+                <button onClick={() => {iDeleted.current = true; socket.emit("delete-game", true);}}>{t("home.leaveGame")}</button>
               </div>
             </div>
             <div className={styles.mine}>
-              <div className={styles.leftInfo}>Your Cards</div>
+              <div className={styles.leftInfo}>{t("home.yourCards")}</div>
               <div className={styles.cards}><RenderPlayerCards cards={myCards} droppableType="my"/></div>
-              <div className={styles.rightInfo}>Your Score: {evaluateExpression(myCards)}</div>
+              <div className={styles.rightInfo}>{t("home.yourScore")}: {evaluateExpression(myCards)}</div>
             </div>
             <DragOverlay dropAnimation={null}>
               {draggedCard&&<div className={cardStyles.card}>{draggedCard}</div>}
