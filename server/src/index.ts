@@ -327,11 +327,14 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log(`Rozłączono: ${socket.id}`);
+    stopWatch(socket);
     const gameId = players_games_id.get(socket.id);
+    if (!gameId) return;
+    const game = current_games.get(gameId);
+    if (!(game?.player1Id === socket.id || game?.player2Id === socket.id)) return;
     deleteGame(gameId, true);
     const waiting_room_id = playersRoomsId.get(socket.id);
     deleteRoom(waiting_room_id);
-    stopWatch(socket);
     broadcastRoomList();
   });
 });
