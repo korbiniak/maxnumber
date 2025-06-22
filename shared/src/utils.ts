@@ -44,52 +44,64 @@ export function isExtensionOfExpression(expr1 : Expression, expr2 : Expression) 
 }
 
 export function evaluateExpression(expr: Card[]): number {
-  // 1) First, parse consecutive Digit cards into actual numbers:
   const tokens: (number | Operation)[] = [];
-  let currentNum: number | null = null;
+  let i = 0;
 
-  for (const token of expr) {
-    if (typeof token === "number") {
-      // build multi‑digit number
-      currentNum = (currentNum ?? 0) * 10 + token;
-    } else {
-      // push finished number, then operator
-      if (currentNum === null) throw new Error("Operator without preceding number");
-      tokens.push(currentNum);
-      tokens.push(token);
-      currentNum = null;
+  while (i < expr.length) {
+    let sign = 1;
+
+    // Obsługa prefiksu - lub +
+    if ((i === 0 || typeof expr[i - 1] !== "number") && (expr[i] === "-" || expr[i] === "+")) {
+      sign = expr[i] === "-" ? -1 : 1;
+      i++;
+    }
+
+    // Składanie liczby
+    if (typeof expr[i] !== "number") {
+      throw new Error(`Unexpected token: ${expr[i]}`);
+    }
+
+    let num = 0;
+    while (i < expr.length && typeof expr[i] === "number") {
+      num = num * 10 + (expr[i] as number);
+      i++;
+    }
+
+    tokens.push(sign * num);
+
+    // Operator
+    if (i < expr.length) {
+      if (typeof expr[i] !== "string") throw new Error(`Expected operator but got number`);
+      tokens.push(expr[i] as Operation);
+      i++;
     }
   }
-  if (currentNum === null) return 0;   // empty or ends with operator
-  tokens.push(currentNum);
 
-  // 2) First pass: handle * and /
+  // 1st pass: handle * and /
   const stack: (number | Operation)[] = [];
-  let i = 0;
+  i = 0;
   while (i < tokens.length) {
     const tk = tokens[i];
     if (tk === "*" || tk === "/") {
-      const op = tk as Operation;
-      const prevNum = stack.pop() as number;
-      const nextNum = tokens[i + 1] as number;
-      const computed = op === "*" ? prevNum * nextNum : prevNum / nextNum;
-      stack.push(computed);
-      i += 2;  // skip the number we just consumed
+      const prev = stack.pop() as number;
+      const next = tokens[i + 1] as number;
+      const res = tk === "*" ? prev * next : prev / next;
+      stack.push(res);
+      i += 2;
     } else {
       stack.push(tk);
-      i += 1;
+      i++;
     }
   }
 
-  // 3) Second pass: handle + and -
+  // 2nd pass: handle + and -
   let result = stack[0] as number;
   i = 1;
   while (i < stack.length) {
     const op = stack[i] as Operation;
     const num = stack[i + 1] as number;
     if (op === "+") result += num;
-    else if (op === "-") result -= num;
-    // (+/* should have been handled already)
+    else result -= num;
     i += 2;
   }
 
