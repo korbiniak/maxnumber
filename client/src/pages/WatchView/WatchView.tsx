@@ -89,40 +89,36 @@ function WatchView(){
 
   return(
     <div className={`${styles.container} ${buttonStyle}`}>
-      {showAlert&&<Alert message="Some player left the game!" deleteMessage={()=>setShowAlert(false)}/>}
-      {!game?(
+      {showAlert && <Alert message={t("watch.alertPlayerLeft")} deleteMessage={() => setShowAlert(false)} />}
+      {!game ? (
         <>
           <Link to="/rooms">{t('watch.joinRoomFirst')}</Link>
         </>
-      ):(
+      ) : (
         <>
-      
-          {winner&&<ScoreModal2 result={winner.result} player1={winner.player1} player2={winner.player2} onClose={()=>{setWinner(null); setGame(undefined);}}/>}
-            <div className={styles.player2}>
-              <div className={styles.leftInfo}>Player 2 Cards ({player2Id})</div>
-              <div className={styles.cards}><RenderPlayerCards cards={cards2} droppableType="enemy"/></div>
-              <div className={styles.rightInfo}>Player 2 Score: {evaluateExpression(cards2)}</div>
+          {winner && <ScoreModal2 result={winner.result} player1={winner.player1} player2={winner.player2} onClose={() => { setWinner(null); setGame(undefined); }} />}
+          <div className={styles.player2}>
+            <div className={styles.leftInfo}>{t('watch.player2Cards')} ({player2Id})</div>
+            <div className={styles.cards}><RenderPlayerCards cards={cards2} droppableType="enemy" /></div>
+            <div className={styles.rightInfo}>{t('watch.player2Score')}: {evaluateExpression(cards2)}</div>
+          </div>
+          <div className={styles.middle}>
+            <div className={styles.leftInfo}>{t('watch.turn', { num: turn })}</div>
+            <div className={styles.available}>
+              <RenderAvailableCards cards={availableCards} />
             </div>
-            <div className={styles.middle}>
-              <div className={styles.leftInfo}>{`Player ${turn} turn`}</div>
-              <div className={styles.available}>
-               
-                  <RenderAvailableCards cards={availableCards}/>
-              </div>
-              <div className={styles.rightInfo}> 
-                <button onClick={() => {socket.emit("stop-watch"); navigate("/rooms")}}>Leave Game</button>
-              </div>
+            <div className={styles.rightInfo}>
+              <button onClick={() => { socket.emit("stop-watch"); navigate("/rooms") }}>{t('watch.leaveGame')}</button>
             </div>
-            <div className={styles.player1}>
-              <div className={styles.leftInfo}>Player 1 Cards ({player1Id})</div>
-              <div className={styles.cards}><RenderPlayerCards cards={cards1} droppableType="my"/></div>
-              <div className={styles.rightInfo}>Player 1 Score: {evaluateExpression(cards1)}</div>
-            </div>
-        
-
-
+          </div>
+          <div className={styles.player1}>
+            <div className={styles.leftInfo}>{t('watch.player1Cards')} ({player1Id})</div>
+            <div className={styles.cards}><RenderPlayerCards cards={cards1} droppableType="my" /></div>
+            <div className={styles.rightInfo}>{t('watch.player1Score')}: {evaluateExpression(cards1)}</div>
+          </div>
         </>
       )}
+
     </div>
   );
 }

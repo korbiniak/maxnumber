@@ -135,7 +135,7 @@ function GameView(){
               <div className={styles.rightInfo}>{t("home.enemyScore")}: {evaluateExpression(enemyCards)}</div>
             </div>
             <div className={styles.middle}>
-              <div className={styles.leftInfo}>{isMyTurn?"Your turn":"Opponent's turn"}</div>
+              <div className={styles.leftInfo}>{isMyTurn?t("home.yourTurn"):t("home.enemyTurn")}</div>
               <div className={styles.available}>
                 <SortableContext items={availableCards.map((_,i)=>`available-${i}`)}>
                   <RenderAvailableCards cards={availableCards}/>

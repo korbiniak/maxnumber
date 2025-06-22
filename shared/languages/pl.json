@@ -5,12 +5,28 @@
         "rooms" : "Pokoje"
     },
 
-    "home" : {
-        "joinRoomFirst" : "Musisz pierwsze dołączyć do pokoju"
+    "home": {
+        "joinRoomFirst": "Najpierw dołącz do pokoju",
+        "enemyCards": "Karty przeciwnika",
+        "enemyTurn": "Tura przeciwnika",
+        "yourTurn": "Twoja tura",
+        "yourCards": "Twoje karty",
+        "leaveGame": "Opuść grę",
+        "yourScore": "Twój wynik",
+        "enemyScore": "Wynik przeciwnika",
+        "errPlayerLeft": "Drugi gracz opuścił grę!",
+        "errInvMove": "Nieprawidłowe wyrażenie! Ruch anulowany"
     },
 
-    "watch" : {
-        "joinRoomFirst" : "By zacząć oglądać gre, dołącz do pokoju"
+    "watch": {
+        "joinRoomFirst": "Najpierw dołącz do pokoju",
+        "alertPlayerLeft": "Jeden z graczy opuścił grę!",
+        "player1Cards": "Karty Gracza 1",
+        "player2Cards": "Karty Gracza 2",
+        "player1Score": "Wynik Gracza 1",
+        "player2Score": "Wynik Gracza 2",
+        "turn": "Tura Gracza {{num}}",
+        "leaveGame": "Opuść grę"
     },
 
     "about" : {
@@ -35,6 +51,22 @@
         "availableRooms" : "Dostępne pokoje",
         "noAvailableRooms" : "Brak dostępnych pokoi"
     },
+
+    "scoreModal": {
+        "win": "Wygrałeś!",
+        "lose": "Przegrałeś!",
+        "draw": "Remis!",
+        "yourScore": "Twój wynik",
+        "enemyScore": "Wynik przeciwnika"
+    },
+
+    "scoreModal2": {
+        "player1Win": "Gracz 1 wygrał!",
+        "player2Win": "Gracz 2 wygrał!",
+        "draw": "Remis!",
+        "player1Score": "Wynik gracza 1",
+        "player2Score": "Wynik gracza 2"
+    },      
 
     "err" : {
         "roomNameLength" : "Długość nazwy pokoju może wynosić maksymalnie 30!",

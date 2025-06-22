@@ -23,12 +23,13 @@
   flex-direction: row;
   gap: 0.5rem;
   flex-wrap: wrap;
-  padding: 0.5rem;
+  padding: 1rem;
   margin: 0; 
   list-style: none; 
   align-items: center;
   justify-content: center;
   max-width: 2000px;
+  
 }
 
 

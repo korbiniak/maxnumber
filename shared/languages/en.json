@@ -18,9 +18,16 @@
         "errInvMove" : "Invalid expression! Move cancelled"
     },
 
-    "watch" : {
-        "joinRoomFirst" : "To watch you have to join a room first"
-    },
+    "watch": {
+        "joinRoomFirst": "You have to join a room first",
+        "alertPlayerLeft": "Some player left the game!",
+        "player1Cards": "Player 1 Cards",
+        "player2Cards": "Player 2 Cards",
+        "player1Score": "Player 1 Score",
+        "player2Score": "Player 2 Score",
+        "turn": "Player {{num}}'s turn",
+        "leaveGame": "Leave Game"
+    },      
 
     "about" : {
         "titles" : {
@@ -44,6 +51,22 @@
         "availableRooms" : "Available Rooms",
         "noAvailableRooms" : "No available rooms"
     },
+    
+    "scoreModal": {
+        "win": "You win!",
+        "lose": "You lose!",
+        "draw": "Draw!",
+        "yourScore": "Your score",
+        "enemyScore": "Enemy score"
+    },
+
+    "scoreModal2": {
+        "player1Win": "Player 1 wins!",
+        "player2Win": "Player 2 wins!",
+        "draw": "Draw!",
+        "player1Score": "Player 1 score",
+        "player2Score": "Player 2 score"
+    },    
 
     "err" : {
         "roomNameLength" : "Room name length can be maximum 30!",
